@@ -3,19 +3,19 @@ import './App.css';
 import { Button, Icon } from '@mui/material';
 import styled from 'styled-components';
 
-function App() {
-  const Title = styled.h1`
-    font-size: 1.5em;
-    text-align: center;
-    color: #00ff00;
-  `;
-  const StyledButton = styled(Button)`
-    && {
-      background-color: #006600;
-      border-radius: 0;
-    }
-  `;
+const Title = styled.h1`
+  font-size: 1.5em;
+  text-align: center;
+  color: #00ff00;
+`;
+const StyledButton = styled(Button)`
+  && {
+    background-color: #006600;
+    border-radius: 0;
+  }
+`;
 
+function App() {
   return (
     <div className="App">
       <header className="App-header">
