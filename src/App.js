@@ -1,22 +1,24 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
-import { Home } from './routes/home';
-import { Navbar } from './routes/navigation';
+import { Feed } from './routes/Feed';
+import { Navbar } from './routes/Navigation';
+import { Post } from './routes/Post';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <div id="app">
+      <Navbar />
       <Routes>
-        <Route element={<Navbar />}>
-          <Route path="/" element={<Home />}>
-            <Route path="new" />
-            <Route path="edit/:post" />
-          </Route>
-          <Route path="/profile" element={<Profile />} />
+        <Route path="/" element={<Feed />} />
+        <Route path="/post/:id" element={<Post />}>
+          <Route path="edit" element={<Post />} />
         </Route>
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/search" element={<Profile />} />
+        <Route path="/settings" element={<Profile />} />
       </Routes>
-    </BrowserRouter>
+    </div>
   );
 }
 

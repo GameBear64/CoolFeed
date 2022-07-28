@@ -23,7 +23,7 @@
     "nodemon": "^2.0.19"
   },
   "scripts": {
-    "start": "concurrently -p \"[{name}]\" -n \"Server,React\" \"cd server && nodemon\" \"react-scripts start\"",
+    "start": "concurrently -n Server,React -c yellow,blue \"cd server && nodemon\" \"react-scripts start\"",
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "react-test": "react-scripts test",
