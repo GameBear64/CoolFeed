@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import { Feed } from './routes/Feed';
-import { Navbar } from './routes/Navigation';
+import { Navbar } from './components/Navigation/Navigation';
 import { Post } from './routes/Post';
 
 export default function App() {
