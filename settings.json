@@ -1,0 +1,6 @@
+{
+  "mongoPort": 27017,
+  "mongoDbName": "CoolFeed",
+  "expressPort": 3030,
+  "secret": "e#jVz894CtKFGyg141Uu12LwNJPhk!eIcgu&39zNHCkl%1MGl!"
+}
