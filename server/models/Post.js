@@ -20,6 +20,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    images: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Image' }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     emote: {
       type: String,

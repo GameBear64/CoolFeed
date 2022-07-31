@@ -1,14 +1,27 @@
+const jwt = require('jsonwebtoken');
+const settings = require('./../../settings.json');
+
+const authRoutes = require('./Auth');
 const userRoutes = require('./User');
-// import settings secret
-// import jwt
+const postRoutes = require('./Post');
+const commentRoutes = require('./Comment');
 
 module.exports = function (app) {
-  //possibly auth before token check?
-  //or we can check inside the middleware if the path is a user create
+  app.use('/auth', authRoutes);
 
-  // app.use(/* here goes auth with jwt*/)
+  app.use((req, res, next) => {
+    try {
+      var decoded = jwt.verify(req.headers.jwt, settings.secret);
+      req.userInSession = decoded.id;
+      next();
+    } catch (err) {
+      return res.status(403).send({ message: 'Not Authorized' });
+    }
+  });
 
   app.use('/user', userRoutes);
+  app.use('/post', postRoutes);
+  app.use('/comment', commentRoutes);
 
   app.use((req, res, next) => {
     res.status(404);

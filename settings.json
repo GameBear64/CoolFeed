@@ -2,5 +2,6 @@
   "mongoPort": 27017,
   "mongoDbName": "CoolFeed",
   "expressPort": 3030,
-  "secret": "e#jVz894CtKFGyg141Uu12LwNJPhk!eIcgu&39zNHCkl%1MGl!"
+  "secret": "i know secrets shouldn't be uploaded to the next but you want the app to work RIGHT???",
+  "task": "please change this to dotenv someday"
 }
