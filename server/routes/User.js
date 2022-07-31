@@ -4,12 +4,10 @@ const { UserModel } = require('../models/User');
 router
   .route('/')
   .get(async (req, res) => {
+    console.log(req.userInSession);
     console.log(req.body);
     let userInfo = await UserModel.find();
     res.status(200).send(userInfo);
-  })
-  .post((req, res) => {
-    res.status(200).send({ message: 'Entry created' });
   })
   .patch((req, res) => {
     res.status(200).send({ message: 'Entry created' });
