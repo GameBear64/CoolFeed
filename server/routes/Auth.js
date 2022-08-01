@@ -14,7 +14,7 @@ router
   .get(async (req, res) => {
     let userAttempting = await UserModel.findOne({ email: req.body.email });
 
-    bcrypt.compare(req.body.password, userAttempting.password, function (err, result) {
+    bcrypt.compare(req.body?.password, userAttempting.password, function (err, result) {
       if (result) {
         return res.status(200).send(createJWTSendCookie(res, userAttempting.id));
       } else {
@@ -33,7 +33,7 @@ router
     if (userExists) return res.status(403).send({ message: 'User exists' });
 
     bcrypt.genSalt(10, function (err, salt) {
-      bcrypt.hash(req.body.password, salt, async function (err, hash) {
+      bcrypt.hash(req.body?.password, salt, async function (err, hash) {
         req.body.password = hash;
         try {
           let user = await UserModel.create(req.body);

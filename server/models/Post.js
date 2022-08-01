@@ -8,10 +8,6 @@ const postSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    title: {
-      type: String,
-      default: null,
-    },
     body: {
       type: String,
       required: true,
@@ -26,10 +22,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       default: '👍',
     },
-    likes: {
-      type: Number,
-      default: 0,
-    },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     likeMode: {
       type: String,
       enum: Object.values(likeMode),

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Post } from '../components/Post/Post';
+import { useState, useEffect } from 'react';
+import { Post } from '../components/Post/index';
+import { PostForm } from '../components/PostForm/index';
 
 export function Feed() {
   const [posts, setPosts] = useState([]);
@@ -17,6 +18,7 @@ export function Feed() {
 
   return (
     <div id="feed" style={{ backgroundColor: 'lightgray' }}>
+      <PostForm setPosts={setPosts} />
       {posts && posts.map(post => <Post key={post._id} post={post} />)}
       <br />
     </div>

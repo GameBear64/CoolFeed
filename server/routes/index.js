@@ -12,6 +12,7 @@ module.exports = function (app) {
 
   // auth check
   app.use((req, res, next) => {
+    console.log(jwt.verify(req.headers.jwt, settings.secret));
     try {
       var decoded = jwt.verify(req.headers.jwt, settings.secret);
       req.userInSession = decoded.id;
