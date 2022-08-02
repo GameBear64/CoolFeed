@@ -13,7 +13,7 @@ export function PostForm({ setPosts }) {
   const handleFileChange = event => {
     let file = event.target.files[0];
 
-    var reader = new FileReader();
+    let reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function () {
       setPostFiles(postFiles => [...postFiles, { name: file.name, data: reader.result }]);
