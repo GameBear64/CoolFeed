@@ -25,13 +25,17 @@ const userSchema = new mongoose.Schema(
       required: true,
       minLength: [8, 'Try something stronger'],
     },
-    profilePicture: String,
+    profilePicture: {
+      type: String,
+      default: null,
+    },
     biography: {
       type: String,
       default: null,
       maxLength: [250, 'Lets keep it short and to the point'],
     },
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    pendingFriends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   },

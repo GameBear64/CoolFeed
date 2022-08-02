@@ -6,13 +6,17 @@ const imageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    type: {
+    md5: {
       type: String,
       required: true,
     },
     data: {
-      type: Buffer,
+      type: String,
       required: true,
+    },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
   },
   { timestamps: true }

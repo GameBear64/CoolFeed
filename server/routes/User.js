@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const ObjectId = require('mongodb').ObjectId;
+
 const { UserModel } = require('../models/User');
 
 router
@@ -20,10 +22,10 @@ router
   });
 
 router
-  .route('/one')
+  .route('/:id')
   .get(async (req, res) => {
     console.log(req.body);
-    let userInfo = await UserModel.findOne(req.body);
+    let userInfo = await UserModel.findOne({ _id: ObjectId(req.params.id) });
     res.status(200).send(userInfo);
   })
   .all((req, res) => {

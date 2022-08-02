@@ -7,39 +7,25 @@ const postRoutes = require('./Post');
 const commentRoutes = require('./Comment');
 
 module.exports = function (app) {
+  //special auth routes (special coz they are above the auth check)
   app.use('/auth', authRoutes);
 
+  // auth check
   app.use((req, res, next) => {
     try {
       var decoded = jwt.verify(req.headers.jwt, settings.secret);
       req.userInSession = decoded.id;
       next();
     } catch (err) {
-      return res.status(403).send({ message: 'Not Authorized' });
+      return res.status(401).send({ message: 'Not Authorized' });
     }
   });
 
+  // routes
   app.use('/user', userRoutes);
   app.use('/post', postRoutes);
   app.use('/comment', commentRoutes);
 
-  app.use((req, res, next) => {
-    res.status(404);
-
-    //soon
-    // respond with html page
-    // if (req.accepts('html')) {
-    //   res.render('404', { url: req.url });
-    //   return;
-    // }
-
-    // respond with json
-    if (req.accepts('json')) {
-      res.json({ message: 'Not found' });
-      return;
-    }
-
-    // default to plain-text. send()
-    res.type('txt').send('Not found');
-  });
+  //if 404
+  app.use((req, res, next) => res.status(404).send({ message: 'Not found' }));
 };

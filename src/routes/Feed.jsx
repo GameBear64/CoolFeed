@@ -1,15 +1,20 @@
-import { Post } from '../components/Post/Post';
+import { useState, useEffect } from 'react';
+import { Post } from '../components/Post/index';
+import { PostForm } from '../components/PostForm/index';
+
+import fetchFeed from './../utils/fetchFeed';
 
 export function Feed() {
-  let posts = [1, 2, 3];
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetchFeed(setPosts);
+  }, []);
+
   return (
     <div id="feed" style={{ backgroundColor: 'lightgray' }}>
-      {posts.map(post => (
-        <>
-          <Post />
-          <br />
-        </>
-      ))}
+      <PostForm setPosts={setPosts} />
+      {posts && posts.map(post => <Post key={post._id} post={post} />)}
       <br />
     </div>
   );

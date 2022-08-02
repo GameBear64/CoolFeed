@@ -6,21 +6,21 @@ const settings = require('./../../settings.json');
 
 let createJWTSendCookie = (res, id) => {
   let expireAt = 3 * 30 * 24 * 60 * 60; /*3 months*/
-  let token = jwt.sign({ id }, settings.secret, { expiresIn: expireAt });
-  res.cookie('jwt', token, { httpOnly: true, maxAge: expireAt });
+  return jwt.sign({ id }, settings.secret, { expiresIn: expireAt });
 };
 
 router
   .route('/login')
-  .get(async (req, res) => {
+  .post(async (req, res) => {
+    console.log(req.body);
     let userAttempting = await UserModel.findOne({ email: req.body.email });
+    if (!userAttempting) return res.status(403).send({ message: 'User exists' });
 
-    bcrypt.compare(req.body.password, userAttempting.password, function (err, result) {
+    bcrypt.compare(req.body?.password, userAttempting.password, function (err, result) {
       if (result) {
-        createJWTSendCookie(res, userAttempting.id);
-        return res.status(200).send({ message: 'Credentials send' });
+        return res.status(200).send({ jwt: createJWTSendCookie(res, userAttempting.id) });
       } else {
-        return res.status(403).send({ message: 'Wrong credentials' });
+        return res.status(401).send({ message: 'Wrong credentials' });
       }
     });
   })
@@ -35,12 +35,15 @@ router
     if (userExists) return res.status(403).send({ message: 'User exists' });
 
     bcrypt.genSalt(10, function (err, salt) {
-      bcrypt.hash(req.body.password, salt, async function (err, hash) {
+      bcrypt.hash(req.body?.password, salt, async function (err, hash) {
         req.body.password = hash;
-        let user = await UserModel.create(req.body);
+        try {
+          let user = await UserModel.create(req.body);
 
-        createJWTSendCookie(res, user.id);
-        return res.status(200).send({ message: 'Entry created' });
+          return res.status(201).send(createJWTSendCookie(res, user.id));
+        } catch (err) {
+          return res.status(406).send({ message: 'Error while creating user', error: err });
+        }
       });
     });
   })
