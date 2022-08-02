@@ -5,7 +5,7 @@ var cors = require('cors');
 const settings = require('./../settings.json');
 
 mongoose
-  .connect(`mongodb://localhost:${settings.mongoPort}/${settings.mongoDbName}`)
+  .connect(`mongodb://127.0.0.1:${settings.mongoPort}/${settings.mongoDbName}`)
   .then(async () => {
     console.log(`Connected to ${settings.mongoDbName} at mongoDB`);
   })

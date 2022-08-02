@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button, TextField, Box } from '@mui/material';
+import fetchFeed from '../../utils/fetchFeed';
 
 export function PostForm({ setPosts }) {
   const [postBody, setPostBody] = useState('');
@@ -34,14 +35,7 @@ export function PostForm({ setPosts }) {
       if (response.ok) {
         setPostBody('');
         setPostFiles([]);
-        fetch(`${window.location.protocol}//${window.location.hostname}:3030/post`, {
-          headers: {
-            jwt: window.localStorage.getItem('jwt'),
-            'content-type': 'application/json',
-          },
-        })
-          .then(res => res.json())
-          .then(data => setPosts(data));
+        fetchFeed(setPosts);
       }
     });
   };

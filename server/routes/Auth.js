@@ -11,12 +11,14 @@ let createJWTSendCookie = (res, id) => {
 
 router
   .route('/login')
-  .get(async (req, res) => {
+  .post(async (req, res) => {
+    console.log(req.body);
     let userAttempting = await UserModel.findOne({ email: req.body.email });
+    if (!userAttempting) return res.status(403).send({ message: 'User exists' });
 
     bcrypt.compare(req.body?.password, userAttempting.password, function (err, result) {
       if (result) {
-        return res.status(200).send(createJWTSendCookie(res, userAttempting.id));
+        return res.status(200).send({ jwt: createJWTSendCookie(res, userAttempting.id) });
       } else {
         return res.status(401).send({ message: 'Wrong credentials' });
       }

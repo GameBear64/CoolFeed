@@ -1,18 +1,26 @@
+import { useState } from 'react';
 import { Button, Icon } from '@mui/material';
 import timeSince from '../../utils/timeSince';
 
 export function Post({ post }) {
-  console.log(post);
+  // console.log(post);
   let { _id, body, author, status, createdAt, images, likes } = post;
+  console.log(_id);
+  const [likesState, setLikesState] = useState(likes?.length);
 
   const handleLIke = () => {
     fetch(`${window.location.protocol}//${window.location.hostname}:3030/post/like/${_id}`, {
-      method: 'patch',
+      method: 'PATCH',
       headers: {
         jwt: window.localStorage.getItem('jwt'),
         'content-type': 'application/json',
       },
-    });
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setLikesState(data.likes);
+      });
   };
 
   return (
@@ -31,7 +39,7 @@ export function Post({ post }) {
 
       <div id="actions">
         <Button onClick={handleLIke}>
-          <Icon>thumb_up</Icon> {likes?.length}
+          <Icon>thumb_up</Icon> {likesState}
         </Button>
         <Button>
           <Icon>mode_comment</Icon>
