@@ -1,5 +1,8 @@
 const router = require('express').Router();
+const ObjectId = require('mongodb').ObjectId;
 const md5 = require('md5');
+
+const { likeMode } = require('../enums/likeMode.enum');
 
 const { PostModel } = require('../models/Post');
 const { ImageModel } = require('../models/Image');
@@ -7,10 +10,8 @@ const { ImageModel } = require('../models/Image');
 router
   .route('/')
   .get(async (req, res) => {
-    console.log('aaa');
     // this will have more advanced filtering logic later on
-    let post = await PostModel.find().populate('author', 'nickname firstName lastName profilePicture').populate('images');
-    // console.log(post);
+    let post = await PostModel.find().populate('images').populate('author', 'nickname firstName lastName profilePicture');
     res.status(200).send(post);
   })
   .post(async (req, res) => {
@@ -36,7 +37,7 @@ router
 router
   .route('/:id')
   .get(async (req, res) => {
-    let post = await PostModel.findOne(req.params.id);
+    let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
     res.status(200).send(post);
   })
   .patch((req, res) => {
@@ -49,9 +50,22 @@ router
 router
   .route('/like/:id')
   .patch(async (req, res) => {
-    let rez = await PostModel.findByIdAndUpdate(req.params.id, { $push: { likes: req.userInSession } });
-    console.log(rez);
-    res.status(200).send({ message: 'Entry patched' });
+    let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
+
+    if (post.likeMode === likeMode.Cheer) {
+      await post.update({ $push: { likes: req.userInSession } });
+    } else {
+      if (post.likes.includes(req.userInSession)) {
+        await post.update({ $pull: { likes: req.userInSession } });
+      } else {
+        await post.update({ $push: { likes: req.userInSession } });
+      }
+    }
+
+    // get most relevant info
+    post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
+
+    res.status(200).send({ message: 'Entry patched', likes: post.likes.length });
   })
   .all((req, res) => {
     res.status(405).send({ message: 'Use another method' });

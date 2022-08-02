@@ -12,13 +12,12 @@ module.exports = function (app) {
 
   // auth check
   app.use((req, res, next) => {
-    console.log(jwt.verify(req.headers.jwt, settings.secret));
     try {
       var decoded = jwt.verify(req.headers.jwt, settings.secret);
       req.userInSession = decoded.id;
       next();
     } catch (err) {
-      return res.status(403).send({ message: 'Not Authorized' });
+      return res.status(401).send({ message: 'Not Authorized' });
     }
   });
 
