@@ -15,6 +15,7 @@ router
     res.status(200).send(post);
   })
   .post(async (req, res) => {
+    console.log(req.body);
     try {
       let imageIds = await uploadImages(req.body.images, req);
       await PostModel.create({ ...req.body, author: req.userInSession, images: imageIds });
@@ -37,11 +38,24 @@ router
 router
   .route('/:id')
   .get(async (req, res) => {
-    let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
+    let post = await PostModel.findOne({ _id: ObjectId(req.params.id) })
+      .populate('images')
+      .populate('author', 'nickname firstName lastName profilePicture');
     res.status(200).send(post);
   })
   .patch((req, res) => {
     res.status(200).send({ message: 'Entry patched' });
+  })
+  .delete(async (req, res) => {
+    let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
+
+    await ImageModel.deleteMany({ _id: { $in: post.images } });
+    //  same for comments
+    // await ImageModel.deleteMany({ _id: { $in: post.images } });
+
+    await post.delete();
+
+    res.status(200).send({ message: 'Entry deleted' });
   })
   .all((req, res) => {
     res.status(405).send({ message: 'Use another method' });
@@ -72,6 +86,7 @@ router
   });
 
 async function uploadImages(images, req) {
+  if (!images) return;
   let imgIds = [];
 
   for (let i = 0; i < images.length; i++) {
