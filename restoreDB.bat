@@ -1,1 +1,3 @@
 mongorestore ./dump
+
+pause
