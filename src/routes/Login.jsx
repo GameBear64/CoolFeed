@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Box } from '@mui/material';
+
+import { UserUpdateContext } from '../context';
 
 export function Login() {
   const [state, setState] = useState({
     email: '',
     password: '',
   });
+
+  let setUser = useContext(UserUpdateContext);
 
   const handleMail = event => {
     setState(s => ({ ...s, email: event.target.value }));
@@ -26,9 +30,9 @@ export function Login() {
       headers: { 'Content-Type': 'application/json' },
     })
       .then(res => res.json())
-      .then(data => {
-        if (!window.localStorage.jwt) return;
+      .then(async data => {
         window.localStorage.jwt = data.jwt;
+        setUser(data.jwt);
         navigate('/');
       });
   };

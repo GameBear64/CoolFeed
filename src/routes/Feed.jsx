@@ -12,7 +12,7 @@ export function Feed() {
   }, []);
 
   return (
-    <div id="feed" style={{ backgroundColor: 'lightgray' }}>
+    <div id="feed" style={{ backgroundColor: '#efefef', border: '1px solid #bcbcbc', borderBottom: 'none', borderTop: 'none', width: '60vw', margin: 'auto' }}>
       <PostForm setPosts={setPosts} />
       {posts && posts.map(post => <PostComponent key={post._id} post={post} setPosts={setPosts} />)}
       <br />

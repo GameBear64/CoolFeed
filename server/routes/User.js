@@ -11,6 +11,12 @@ router
     let userInfo = await UserModel.find();
     res.status(200).send(userInfo);
   })
+  .post(async (req, res) => {
+    console.log(req.userInSession);
+    console.log(req.body);
+    let userInfo = await UserModel.find();
+    res.status(200).send(userInfo);
+  })
   .patch((req, res) => {
     res.status(200).send({ message: 'Entry created' });
   })

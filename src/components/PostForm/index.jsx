@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { Button, TextField, Box } from '@mui/material';
+import { Box } from '@mui/material';
+
+import { PostFormImages } from './Images/index';
+import { PostFormBody } from './Body/index';
+import { PostFormActions } from './Action/index';
+
 import fetchFeed from '../../utils/fetchFeed';
 
 export function PostForm({ setPosts }) {
@@ -7,30 +12,11 @@ export function PostForm({ setPosts }) {
     status: '',
     body: '',
     images: [],
+    likeMode: 'regular',
+    emote: '👍',
   };
 
   const [postBody, setPostBody] = useState(defaultState);
-
-  const handleBodyChange = event => {
-    setPostBody(s => ({ ...s, body: event.target.value }));
-  };
-
-  const handleStatusChange = event => {
-    setPostBody(s => ({ ...s, status: event.target.value }));
-  };
-
-  const handleFileChange = event => {
-    let file = event.target.files[0];
-
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function () {
-      setPostBody(postBody => ({
-        ...postBody,
-        images: [...postBody.images, { name: file.name, data: reader.result }],
-      }));
-    };
-  };
 
   const handleSubmit = () => {
     fetch(`${window.location.protocol}//${window.location.hostname}:3030/post`, {
@@ -49,22 +35,19 @@ export function PostForm({ setPosts }) {
   };
 
   return (
-    <div id="postForm" style={{ backgroundColor: 'lightpink', marginBottom: '5vh' }}>
+    <div id="postForm">
       <Box
         component="form"
         sx={{
           '& .MuiTextField-root': { m: 1, width: '25ch' },
         }}
-        noValidate
         autoComplete="off"
       >
-        <TextField id="postStatus" label="How are you feeling today?" value={postBody.status} onChange={handleStatusChange} />
-        <TextField id="postBody" label="Got something cool to share?" multiline rows={4} style={{ width: '50vw' }} value={postBody.body} onChange={handleBodyChange} />
-        <Button variant="contained" component="label">
-          Upload File
-          <input type="file" hidden onChange={handleFileChange} />
-        </Button>
-        <Button onClick={handleSubmit}>Submit</Button>
+        <PostFormBody postBody={postBody} setPostBody={setPostBody} />
+
+        <PostFormImages postBody={postBody} setPostBody={setPostBody} />
+
+        <PostFormActions postBody={postBody} setPostBody={setPostBody} handleSubmit={handleSubmit} />
       </Box>
     </div>
   );

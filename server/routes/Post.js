@@ -12,10 +12,9 @@ router
   .get(async (req, res) => {
     // this will have more advanced filtering logic later on
     let post = await PostModel.find().populate('images').populate('author', 'nickname firstName lastName profilePicture');
-    res.status(200).send(post);
+    res.status(200).send(post.reverse());
   })
   .post(async (req, res) => {
-    console.log(req.body);
     try {
       let imageIds = await uploadImages(req.body.images, req);
       await PostModel.create({ ...req.body, author: req.userInSession, images: imageIds });

@@ -5,12 +5,17 @@ import { Button, TextField, Box } from '@mui/material';
 export function Register() {
   const [state, setState] = useState({
     firstName: '',
+    lastName: '',
     email: '',
     password: '',
   });
 
   const handleFname = event => {
     setState(s => ({ ...s, firstName: event.target.value }));
+  };
+
+  const handleLname = event => {
+    setState(s => ({ ...s, lastName: event.target.value }));
   };
 
   const handleMail = event => {
@@ -49,6 +54,7 @@ export function Register() {
         autoComplete="off"
       >
         <TextField id="registerName" label="First Name" value={state.firstName} onChange={handleFname} />
+        <TextField id="registerName" label="Last Name" value={state.lastName} onChange={handleLname} />
         <TextField id="registerEmail" label="Email" value={state.email} onChange={handleMail} />
         <TextField id="registerPassword" label="Password" value={state.password} onChange={handlePassword} />
         <Button onClick={handleSubmit}>Submit</Button>
