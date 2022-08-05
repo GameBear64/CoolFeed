@@ -27,7 +27,7 @@ export function PostFormImages({ postBody, setPostBody }) {
     <Grid id="postImageComponent" container justifyContent="center" direction="column" style={{ marginBottom: '2vh' }}>
       {postBody.images &&
         postBody.images.map(img => (
-          <ImageIndicator>
+          <ImageIndicator key={img.name}>
             {img.name}
             <Icon onClick={() => handleRemoveImage(img.name)}>close</Icon>
           </ImageIndicator>

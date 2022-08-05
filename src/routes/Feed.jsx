@@ -4,6 +4,8 @@ import { PostForm } from '../components/PostForm/index';
 
 import fetchFeed from './../utils/fetchFeed';
 
+import { MainView } from './styles';
+
 export function Feed() {
   const [posts, setPosts] = useState([]);
 
@@ -12,10 +14,13 @@ export function Feed() {
   }, []);
 
   return (
-    <div id="feed" style={{ backgroundColor: '#efefef', border: '1px solid #bcbcbc', borderBottom: 'none', borderTop: 'none', width: '60vw', margin: 'auto' }}>
+    <MainView>
       <PostForm setPosts={setPosts} />
+
       {posts && posts.map(post => <PostComponent key={post._id} post={post} setPosts={setPosts} />)}
+
+      <p style={{ textAlign: 'center' }}>You reached the end!</p>
       <br />
-    </div>
+    </MainView>
   );
 }

@@ -4,9 +4,11 @@ import { useParams, useLocation } from 'react-router-dom';
 import { PostComponent } from '../components/Post/index';
 import { PostForm } from '../components/PostForm/index';
 
+import { MainView } from './styles';
+
 export function Post() {
   const { id } = useParams();
-  const [post, setPost] = useState([]);
+  const [post, setPost] = useState(null);
 
   const location = useLocation();
   const editMode = location.pathname.includes('/edit') || false;
@@ -23,11 +25,11 @@ export function Post() {
   }, [id]);
 
   return (
-    <div id="singlePost" style={{ backgroundColor: 'lightgray' }}>
+    <MainView id="singlePost">
       {/* have these two components have modes, single post and multi post */}
       {/* post form will be empty in multipost and prepopulated in single post */}
       {/* post component wont have the "view" option in single post mode */}
-      {(editMode && <PostForm setPosts={setPost} />) || <PostComponent post={post} setPosts={setPost} />}
-    </div>
+      {post && ((editMode && <PostForm setPosts={setPost} post={post} />) || <PostComponent post={post} setPosts={setPost} single />)}
+    </MainView>
   );
 }

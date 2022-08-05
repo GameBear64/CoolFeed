@@ -66,12 +66,12 @@ router
     let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
 
     if (post.likeMode === likeMode.Cheer) {
-      await post.update({ $push: { likes: req.userInSession } });
+      await post.update({ $push: { likes: req.userInSession } }, { timestamps: false });
     } else {
       if (post.likes.includes(req.userInSession)) {
-        await post.update({ $pull: { likes: req.userInSession } });
+        await post.update({ $pull: { likes: req.userInSession } }, { timestamps: false });
       } else {
-        await post.update({ $push: { likes: req.userInSession } });
+        await post.update({ $push: { likes: req.userInSession } }, { timestamps: false });
       }
     }
 

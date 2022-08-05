@@ -4,7 +4,7 @@ import { Button, Icon, Menu, MenuItem, Dialog, DialogTitle, DialogContent, Dialo
 
 import fetchFeed from '../../../utils/fetchFeed';
 
-export function PostComponentMetaSettings({ setPosts, id }) {
+export function PostComponentMetaSettings({ setPosts, id, single }) {
   const navigate = useNavigate();
 
   const [openWarning, setOpenWarning] = useState(false);
@@ -17,7 +17,6 @@ export function PostComponentMetaSettings({ setPosts, id }) {
   };
 
   const handleMenuOption = event => {
-    console.log(event.target.dataset.item);
     setMenuElement(null);
 
     if (event.target.dataset.item === 'delete') setOpenWarning(true);
@@ -42,7 +41,6 @@ export function PostComponentMetaSettings({ setPosts, id }) {
       })
         .then(response => response.json())
         .then(data => {
-          console.log(data);
           fetchFeed(setPosts);
         });
     }
@@ -50,7 +48,7 @@ export function PostComponentMetaSettings({ setPosts, id }) {
   };
 
   return (
-    <div id="post">
+    <div id="postMetaSettings">
       <Dialog open={openWarning} onClose={handleDialogOption} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
         <DialogTitle id="alert-dialog-title">Do you really want to delete this?</DialogTitle>
         <DialogContent>
@@ -67,9 +65,11 @@ export function PostComponentMetaSettings({ setPosts, id }) {
       </Dialog>
 
       <Menu id="postMenu" anchorEl={menuElement} open={openMenu} onClose={handleMenuOption}>
-        <MenuItem data-item="view" onClick={handleMenuOption}>
-          View
-        </MenuItem>
+        {!single && (
+          <MenuItem data-item="view" onClick={handleMenuOption}>
+            View
+          </MenuItem>
+        )}
         <MenuItem data-item="edit" onClick={handleMenuOption}>
           Edit
         </MenuItem>

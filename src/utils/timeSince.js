@@ -1,6 +1,7 @@
 export default function timeSince(date) {
   const getUnit = (number, baseUnit) => {
-    return number <= 1 ? `${number} ${baseUnit} ago` : `${number} ${baseUnit}s ago`;
+    // return number <= 1 ? `${number} ${baseUnit} ago` : `${number} ${baseUnit}s ago`;
+    return `${number} ${baseUnit}${number <= 1 ? '' : 's'} ago`;
   };
 
   let seconds = Math.floor((new Date() - new Date(date)) / 1000);

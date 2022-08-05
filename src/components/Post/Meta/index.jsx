@@ -1,17 +1,17 @@
 import { Grid } from '@mui/material';
 import Twemoji from 'react-twemoji';
 
-import { ProfilePicture } from './styles';
+import { ProfilePicture, MetaTab } from './styles';
 
 import { PostComponentMetaSettings } from '../Settings/index';
 
 import timeSince from '../../../utils/timeSince';
 
-export function PostComponentMeta({ setPosts, post }) {
+export function PostComponentMeta({ setPosts, post, single }) {
   let { _id, author, status, createdAt, updatedAt } = post;
 
   return (
-    <Grid container>
+    <MetaTab container>
       <Grid
         item
         xs={10}
@@ -24,8 +24,9 @@ export function PostComponentMeta({ setPosts, post }) {
 
         <Twemoji>
           <h2>{author?.nickname || `${author?.firstName} ${author?.lastName || ''}`} </h2>
+          {/* {createdAt} <br /> {updatedAt} */}
           <p>
-            {status || ''} {status && '·'} {timeSince(createdAt)} {createdAt === updatedAt ? ' · edited' : ''}
+            {status || ''} {status && '·'} {timeSince(createdAt)} {createdAt !== updatedAt ? ' · edited' : ''}
           </p>
         </Twemoji>
       </Grid>
@@ -38,8 +39,8 @@ export function PostComponentMeta({ setPosts, post }) {
           justifyContent: 'flex-end',
         }}
       >
-        <PostComponentMetaSettings setPosts={setPosts} id={_id} style={{ marginLeft: 'auto' }} />
+        <PostComponentMetaSettings setPosts={setPosts} id={_id} style={{ marginLeft: 'auto' }} single={single} />
       </Grid>
-    </Grid>
+    </MetaTab>
   );
 }

@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { Icon, TextField, Button, Menu, MenuItem } from '@mui/material';
+import { Icon, TextField, Button, Menu, MenuItem, Grid } from '@mui/material';
 
 import { UserUpdateContext } from '../../context';
 
@@ -31,7 +31,7 @@ export function Navbar() {
   };
 
   return (
-    <div id="nav" style={{ backgroundColor: 'lightblue' }}>
+    <Grid id="nav" container direction="row" justifyContent="space-between" alignItems="center" style={{ backgroundColor: 'lightblue' }}>
       <Link to={'/'}>
         <Icon>home</Icon> Home
       </Link>
@@ -52,6 +52,6 @@ export function Navbar() {
           Logout
         </MenuItem>
       </Menu>
-    </div>
+    </Grid>
   );
 }
