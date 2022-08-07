@@ -1,62 +1,75 @@
 import { useState } from 'react';
-import { Button, TextField, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box } from '@mui/material';
+
+import { PostFormImages } from './Images/index';
+import { PostFormBody } from './Body/index';
+import { PostFormActions } from './Action/index';
+
 import fetchFeed from '../../utils/fetchFeed';
 
-export function PostForm({ setPosts }) {
-  const [postBody, setPostBody] = useState('');
-  const [postFiles, setPostFiles] = useState([]);
+import { FormContainer } from './styles';
 
-  const handleBodyChange = event => {
-    setPostBody(event.target.value);
+export function PostForm({ setPosts, post }) {
+  const defaultState = {
+    status: '',
+    body: '',
+    images: [],
+    likeMode: 'regular',
+    emote: '👍',
   };
 
-  const handleFileChange = event => {
-    let file = event.target.files[0];
+  const [postBody, setPostBody] = useState(post || defaultState);
 
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function () {
-      setPostFiles(postFiles => [...postFiles, { name: file.name, data: reader.result }]);
-    };
-  };
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
-    fetch(`${window.location.protocol}//${window.location.hostname}:3030/post`, {
-      method: 'post',
-      body: JSON.stringify({
-        body: postBody,
-        images: postFiles,
-      }),
-      headers: {
-        jwt: window.localStorage.getItem('jwt'),
-        'content-type': 'application/json',
-      },
-    }).then(response => {
-      if (response.ok) {
-        setPostBody('');
-        setPostFiles([]);
-        fetchFeed(setPosts);
-      }
-    });
+    if (post) {
+      fetch(`${window.location.protocol}//${window.location.hostname}:3030/post/${postBody._id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(postBody),
+        headers: {
+          jwt: JSON.parse(window.localStorage.getItem('cf_data')).jwt,
+          'content-type': 'application/json',
+        },
+      }).then(response => {
+        if (response.ok) {
+          fetchFeed(setPosts, 0);
+          navigate('/');
+        }
+      });
+    } else {
+      fetch(`${window.location.protocol}//${window.location.hostname}:3030/post`, {
+        method: 'post',
+        body: JSON.stringify(postBody),
+        headers: {
+          jwt: JSON.parse(window.localStorage.getItem('cf_data')).jwt,
+          'content-type': 'application/json',
+        },
+      }).then(response => {
+        if (response.ok) {
+          setPostBody(defaultState);
+          fetchFeed(setPosts, 0);
+        }
+      });
+    }
   };
 
   return (
-    <div id="postForm" style={{ backgroundColor: 'lightpink', marginBottom: '5vh' }}>
+    <FormContainer id="postForm">
       <Box
         component="form"
         sx={{
           '& .MuiTextField-root': { m: 1, width: '25ch' },
         }}
-        noValidate
         autoComplete="off"
       >
-        <TextField id="postMainForm" label="Got something cool to share?" multiline rows={4} style={{ width: '50vw' }} value={postBody} onChange={handleBodyChange} />
-        <Button variant="contained" component="label">
-          Upload File
-          <input type="file" hidden onChange={handleFileChange} />
-        </Button>
-        <Button onClick={handleSubmit}>Submit</Button>
+        <PostFormBody postBody={postBody} setPostBody={setPostBody} />
+
+        <PostFormImages postBody={postBody} setPostBody={setPostBody} />
+
+        <PostFormActions postBody={postBody} setPostBody={setPostBody} handleSubmit={handleSubmit} single={!!post} />
       </Box>
-    </div>
+    </FormContainer>
   );
 }

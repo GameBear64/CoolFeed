@@ -1,53 +1,30 @@
-import { useState } from 'react';
-import { Button, Icon } from '@mui/material';
-import timeSince from '../../utils/timeSince';
+import { Fade } from '@mui/material';
+import { Carousel } from 'react-responsive-carousel';
 
-export function Post({ post }) {
-  // console.log(post);
-  let { _id, body, author, status, createdAt, images, likes } = post;
-  console.log(_id);
-  const [likesState, setLikesState] = useState(likes?.length);
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { PostImage, PostBody, Post } from './styles';
 
-  const handleLIke = () => {
-    fetch(`${window.location.protocol}//${window.location.hostname}:3030/post/like/${_id}`, {
-      method: 'PATCH',
-      headers: {
-        jwt: window.localStorage.getItem('jwt'),
-        'content-type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        setLikesState(data.likes);
-      });
-  };
+import { PostComponentMeta } from './Meta/index';
+import { PostComponentAction } from './Action/index';
+
+export function PostComponent({ setPosts, post, single }) {
+  let { body, images } = post;
 
   return (
-    <div id="post" style={{ backgroundColor: 'lightpink', marginBottom: '5vh' }}>
-      <div id="settings">
-        <Icon>more_horiz</Icon>
-      </div>
-      <div id="header">
-        <img src="https://picsum.photos/50" alt="ProfilePicture" />
-        <p>{author?.nickname || `${author?.firstName} ${author?.lastName || ''}`} </p>
-        <p>{status || ''}</p>
-        <p>{timeSince(createdAt)}</p>
-      </div>
-      <p id="post">{body}</p>
-      {images && images.map(({ _id, name, data }) => <img key={_id} src={data} alt={name} />)}
+    <Fade in timeout={500}>
+      <Post id="post">
+        <PostComponentMeta setPosts={setPosts} post={post} single={single} />
 
-      <div id="actions">
-        <Button onClick={handleLIke}>
-          <Icon>thumb_up</Icon> {likesState}
-        </Button>
-        <Button>
-          <Icon>mode_comment</Icon>
-        </Button>
-        <Button>
-          <Icon>share</Icon>
-        </Button>
-      </div>
-    </div>
+        <PostBody>
+          <p>{body}</p>
+        </PostBody>
+
+        <Carousel showThumbs={false} infiniteLoop emulateTouch useKeyboardArrows dynamicHeight showStatus={false} showIndicators={images?.length > 1}>
+          {images && images.map(({ _id, name, data }) => <PostImage key={_id} src={data} alt={name} />)}
+        </Carousel>
+
+        <PostComponentAction post={post} />
+      </Post>
+    </Fade>
   );
 }

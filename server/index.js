@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-var cors = require('cors');
+const cors = require('cors');
+
 const settings = require('./../settings.json');
 
 mongoose

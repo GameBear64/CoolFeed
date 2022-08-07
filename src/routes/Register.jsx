@@ -1,16 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Box } from '@mui/material';
+
+import { UserContext, UserUpdateContext } from '../context';
 
 export function Register() {
   const [state, setState] = useState({
     firstName: '',
+    lastName: '',
     email: '',
     password: '',
   });
 
+  const navigate = useNavigate();
+
+  let setUser = useContext(UserUpdateContext);
+
+  let { user } = useContext(UserContext);
+
+  useEffect(() => {
+    if (user) return navigate('/');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   const handleFname = event => {
     setState(s => ({ ...s, firstName: event.target.value }));
+  };
+
+  const handleLname = event => {
+    setState(s => ({ ...s, lastName: event.target.value }));
   };
 
   const handleMail = event => {
@@ -21,8 +39,6 @@ export function Register() {
     setState(s => ({ ...s, password: event.target.value }));
   };
 
-  const navigate = useNavigate();
-
   const handleSubmit = () => {
     console.log(state);
     fetch(`${window.location.protocol}//${window.location.hostname}:3030/auth/register`, {
@@ -30,10 +46,13 @@ export function Register() {
       body: JSON.stringify(state),
       headers: { 'Content-Type': 'application/json' },
     })
-      .then(res => res.json())
+      .then(res => {
+        if (res.ok) return res.json();
+      })
       .then(data => {
-        if (!window.localStorage.jwt) return;
-        window.localStorage.jwt = data.jwt;
+        console.log(data.jwt);
+        window.localStorage.cf_data = JSON.stringify(data);
+        setUser(data);
         navigate('/');
       });
   };
@@ -49,6 +68,7 @@ export function Register() {
         autoComplete="off"
       >
         <TextField id="registerName" label="First Name" value={state.firstName} onChange={handleFname} />
+        <TextField id="registerName" label="Last Name" value={state.lastName} onChange={handleLname} />
         <TextField id="registerEmail" label="Email" value={state.email} onChange={handleMail} />
         <TextField id="registerPassword" label="Password" value={state.password} onChange={handlePassword} />
         <Button onClick={handleSubmit}>Submit</Button>

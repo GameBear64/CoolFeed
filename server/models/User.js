@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
-      default: null,
+      required: true,
       minLength: [3, 'Your name is too short'],
     },
     nickname: {
@@ -36,8 +36,6 @@ const userSchema = new mongoose.Schema(
     },
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     pendingFriends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   },
   { timestamps: true }
 );
