@@ -1,14 +1,19 @@
+import { useContext } from 'react';
 import { Grid } from '@mui/material';
 import Twemoji from 'react-twemoji';
+import { Link } from 'react-router-dom';
 
 import { ProfilePicture, MetaTab } from './styles';
 
 import { PostComponentMetaSettings } from '../Settings/index';
 
+import { UserContext } from './../../../context/index';
+
 import timeSince from '../../../utils/timeSince';
 
 export function PostComponentMeta({ setPosts, post, single }) {
-  let { _id, author, status, createdAt, updatedAt } = post;
+  let { author, status, createdAt, updatedAt } = post;
+  let { user } = useContext(UserContext);
 
   return (
     <MetaTab container>
@@ -23,7 +28,9 @@ export function PostComponentMeta({ setPosts, post, single }) {
         <ProfilePicture src={author?.profilePicture} alt="ProfilePicture" />
 
         <Twemoji>
-          <h2>{author?.nickname || `${author?.firstName} ${author?.lastName || ''}`} </h2>
+          <Link to={`/profile/${author._id}`} style={{ textDecoration: 'none', color: 'black' }}>
+            <h2>{author?.nickname || `${author?.firstName} ${author?.lastName || ''}`} </h2>
+          </Link>
           {/* {createdAt} <br /> {updatedAt} */}
           <p>
             {status || ''} {status && '·'} {timeSince(createdAt)} {createdAt !== updatedAt ? ' · edited' : ''}
@@ -39,7 +46,7 @@ export function PostComponentMeta({ setPosts, post, single }) {
           justifyContent: 'flex-end',
         }}
       >
-        <PostComponentMetaSettings setPosts={setPosts} id={_id} style={{ marginLeft: 'auto' }} single={single} />
+        {(user._id === author._id || !single) && <PostComponentMetaSettings setPosts={setPosts} post={post} style={{ marginLeft: 'auto' }} single={single} />}
       </Grid>
     </MetaTab>
   );

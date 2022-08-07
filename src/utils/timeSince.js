@@ -27,5 +27,5 @@ export default function timeSince(date) {
   if (interval > 1) {
     return getUnit(Math.floor(interval), 'minute');
   }
-  return 'seconds ago';
+  return 'few seconds ago';
 }

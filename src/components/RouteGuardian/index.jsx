@@ -4,10 +4,9 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { UserContext } from './../../context/index';
 
 const RouteGuardian = () => {
-  let user = useContext(UserContext);
-  console.log(user);
+  let { user } = useContext(UserContext);
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/register" replace />;
 
   return <Outlet />;
 };

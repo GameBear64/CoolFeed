@@ -5,7 +5,7 @@ import Twemoji from 'react-twemoji';
 
 import { SubmitButton, EmoteButton } from './styles';
 
-export function PostFormActions({ postBody, setPostBody, handleSubmit }) {
+export function PostFormActions({ postBody, setPostBody, handleSubmit, single }) {
   const [openPicker, setOpenPicker] = useState(false);
 
   const onEmojiClick = (event, emojiObject) => {
@@ -32,18 +32,27 @@ export function PostFormActions({ postBody, setPostBody, handleSubmit }) {
         </Button>
       </Dialog>
 
-      <ToggleButtonGroup size="small" color="primary" value={postBody.likeMode} exclusive onChange={handleModeChange}>
-        <ToggleButton value="regular">Regular</ToggleButton>
-        <ToggleButton value="cheer">Cheer</ToggleButton>
-      </ToggleButtonGroup>
+      {!single && (
+        <>
+          <ToggleButtonGroup size="small" color="primary" value={postBody.likeMode} exclusive onChange={handleModeChange}>
+            <ToggleButton value="regular">Regular</ToggleButton>
+            <ToggleButton value="cheer">Cheer</ToggleButton>
+          </ToggleButtonGroup>
 
-      <EmoteButton id="basic-button" onClick={handleEmojiToggle}>
-        <Twemoji>{postBody.emote}</Twemoji>
-      </EmoteButton>
-
+          <EmoteButton id="basic-button" onClick={handleEmojiToggle}>
+            <Twemoji>{postBody.emote}</Twemoji>
+          </EmoteButton>
+        </>
+      )}
       <SubmitButton variant="contained" onClick={handleSubmit}>
         Post!
       </SubmitButton>
+
+      {single && (
+        <>
+          <br /> <br />
+        </>
+      )}
     </div>
   );
 }

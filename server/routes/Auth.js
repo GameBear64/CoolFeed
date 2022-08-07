@@ -22,15 +22,14 @@ router
     }
   })
   .all((req, res) => {
-    res.status(405).send({ message: 'Route is POST only' });
+    res.status(405).send({ message: 'Route is GET only' });
   });
 
 router
   .route('/login')
   .post(async (req, res) => {
-    console.log(req.body);
     let userAttempting = await UserModel.findOne({ email: req.body.email });
-    if (!userAttempting) return res.status(403).send({ message: 'User exists' });
+    if (!userAttempting) return res.status(403).send({ message: 'User does not exists' });
 
     bcrypt.compare(req.body?.password, userAttempting.password, function (err, result) {
       if (result) {
@@ -58,7 +57,7 @@ router
         } else {
           // uknow
         }
-        console.log(req.body);
+        console.log('register', req.body);
         try {
           let user = await UserModel.create(req.body);
           return res.status(201).send({ jwt: createJWTSendCookie(res, user.id), user: filterUserFelids(user) });

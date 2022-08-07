@@ -1,8 +1,8 @@
-import { useState, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Box } from '@mui/material';
 
-import { UserUpdateContext } from '../context';
+import { UserContext, UserUpdateContext } from '../context';
 
 export function Login() {
   const [state, setState] = useState({
@@ -10,7 +10,16 @@ export function Login() {
     password: '',
   });
 
+  const navigate = useNavigate();
+
   let setUser = useContext(UserUpdateContext);
+
+  let { user } = useContext(UserContext);
+
+  useEffect(() => {
+    if (user) return navigate('/');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const handleMail = event => {
     setState(s => ({ ...s, email: event.target.value }));
@@ -20,8 +29,6 @@ export function Login() {
     setState(s => ({ ...s, password: event.target.value }));
   };
 
-  const navigate = useNavigate();
-
   const handleSubmit = () => {
     console.log(state);
     fetch(`${window.location.protocol}//${window.location.hostname}:3030/auth/login`, {
@@ -29,10 +36,13 @@ export function Login() {
       body: JSON.stringify(state),
       headers: { 'Content-Type': 'application/json' },
     })
-      .then(res => res.json())
-      .then(async data => {
-        window.localStorage.jwt = data.jwt;
-        setUser(data.jwt);
+      .then(res => {
+        if (res.ok) return res.json();
+      })
+      .then(data => {
+        console.log(data);
+        window.localStorage.cf_data = JSON.stringify(data);
+        setUser(data);
         navigate('/');
       });
   };

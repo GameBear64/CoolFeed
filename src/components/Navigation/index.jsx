@@ -19,14 +19,19 @@ export function Navbar() {
 
   const handleClose = event => {
     if (event.target.dataset.item === 'logout') {
-      window.localStorage.jwt = '';
+      window.localStorage.cf_data = '';
       setUser(null);
       navigate(`/login`);
     }
 
-    if (event.target.dataset.item === 'view') {
-      // navigate(`/post/${_id}`);
+    if (event.target.dataset.item === 'profile') {
+      navigate(`/profile`);
     }
+
+    if (event.target.dataset.item === 'notifications') {
+      navigate(`/profile/notifications`);
+    }
+
     setAnchorEl(null);
   };
 
@@ -44,6 +49,9 @@ export function Navbar() {
       <Menu id="navMenu" anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem data-item="profile" onClick={handleClose}>
           Profile
+        </MenuItem>
+        <MenuItem data-item="notifications" onClick={handleClose}>
+          Notifications
         </MenuItem>
         <MenuItem data-item="settings" onClick={handleClose}>
           Settings

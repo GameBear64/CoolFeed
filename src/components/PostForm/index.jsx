@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 
 import { PostFormImages } from './Images/index';
@@ -18,38 +19,37 @@ export function PostForm({ setPosts, post }) {
     emote: '👍',
   };
 
-  console.log(post);
-
   const [postBody, setPostBody] = useState(post || defaultState);
+
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     if (post) {
       fetch(`${window.location.protocol}//${window.location.hostname}:3030/post/${postBody._id}`, {
-        method: 'patch',
+        method: 'PATCH',
         body: JSON.stringify(postBody),
         headers: {
-          jwt: window.localStorage.getItem('jwt'),
+          jwt: JSON.parse(window.localStorage.getItem('cf_data')).jwt,
           'content-type': 'application/json',
         },
       }).then(response => {
-        console.log();
-        // if (response.ok) {
-        //   setPostBody(defaultState);
-        //   fetchFeed(setPosts);
-        // }
+        if (response.ok) {
+          fetchFeed(setPosts, 0);
+          navigate('/');
+        }
       });
     } else {
       fetch(`${window.location.protocol}//${window.location.hostname}:3030/post`, {
         method: 'post',
         body: JSON.stringify(postBody),
         headers: {
-          jwt: window.localStorage.getItem('jwt'),
+          jwt: JSON.parse(window.localStorage.getItem('cf_data')).jwt,
           'content-type': 'application/json',
         },
       }).then(response => {
         if (response.ok) {
           setPostBody(defaultState);
-          fetchFeed(setPosts);
+          fetchFeed(setPosts, 0);
         }
       });
     }
@@ -68,7 +68,7 @@ export function PostForm({ setPosts, post }) {
 
         <PostFormImages postBody={postBody} setPostBody={setPostBody} />
 
-        <PostFormActions postBody={postBody} setPostBody={setPostBody} handleSubmit={handleSubmit} />
+        <PostFormActions postBody={postBody} setPostBody={setPostBody} handleSubmit={handleSubmit} single={!!post} />
       </Box>
     </FormContainer>
   );

@@ -1,3 +1,4 @@
+import { Fade } from '@mui/material';
 import { Carousel } from 'react-responsive-carousel';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
@@ -10,18 +11,20 @@ export function PostComponent({ setPosts, post, single }) {
   let { body, images } = post;
 
   return (
-    <Post id="post">
-      <PostComponentMeta setPosts={setPosts} post={post} single={single} />
+    <Fade in timeout={500}>
+      <Post id="post">
+        <PostComponentMeta setPosts={setPosts} post={post} single={single} />
 
-      <PostBody>
-        <p>{body}</p>
-      </PostBody>
+        <PostBody>
+          <p>{body}</p>
+        </PostBody>
 
-      <Carousel showThumbs={false} infiniteLoop emulateTouch useKeyboardArrows dynamicHeight showStatus={false} showIndicators={images?.length > 1}>
-        {images && images.map(({ _id, name, data }) => <PostImage key={_id} src={data} alt={name} />)}
-      </Carousel>
+        <Carousel showThumbs={false} infiniteLoop emulateTouch useKeyboardArrows dynamicHeight showStatus={false} showIndicators={images?.length > 1}>
+          {images && images.map(({ _id, name, data }) => <PostImage key={_id} src={data} alt={name} />)}
+        </Carousel>
 
-      <PostComponentAction post={post} />
-    </Post>
+        <PostComponentAction post={post} />
+      </Post>
+    </Fade>
   );
 }

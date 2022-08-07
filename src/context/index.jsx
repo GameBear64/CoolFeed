@@ -4,7 +4,7 @@ export const UserContext = createContext();
 export const UserUpdateContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
-  const [user, setUser] = useState(window.localStorage.jwt);
+  const [user, setUser] = useState(JSON.parse(window?.localStorage?.cf_data || null) || {});
 
   return (
     <UserContext.Provider value={user}>

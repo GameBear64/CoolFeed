@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState, useContext } from 'react';
 import { Button, Icon, Grid } from '@mui/material';
 import Twemoji from 'react-twemoji';
 
 import { LikeButton } from './styles';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { UserContext } from './../../../context/index';
 
 export function PostComponentAction({ post }) {
+  const { jwt } = useContext(UserContext);
   let { _id, likes, emote } = post;
   const [likesState, setLikesState] = useState(likes?.length);
 
@@ -13,7 +15,7 @@ export function PostComponentAction({ post }) {
     fetch(`${window.location.protocol}//${window.location.hostname}:3030/post/like/${_id}`, {
       method: 'PATCH',
       headers: {
-        jwt: window.localStorage.getItem('jwt'),
+        jwt,
         'content-type': 'application/json',
       },
     })

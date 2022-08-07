@@ -16,7 +16,7 @@ export function Post() {
   useEffect(() => {
     fetch(`${window.location.protocol}//${window.location.hostname}:3030/post/${id}`, {
       headers: {
-        jwt: window.localStorage.getItem('jwt'),
+        jwt: JSON.parse(window.localStorage.getItem('cf_data')).jwt,
         'content-type': 'application/json',
       },
     })
@@ -24,12 +24,5 @@ export function Post() {
       .then(data => setPost(data));
   }, [id]);
 
-  return (
-    <MainView id="singlePost">
-      {/* have these two components have modes, single post and multi post */}
-      {/* post form will be empty in multipost and prepopulated in single post */}
-      {/* post component wont have the "view" option in single post mode */}
-      {post && ((editMode && <PostForm setPosts={setPost} post={post} />) || <PostComponent post={post} setPosts={setPost} single />)}
-    </MainView>
-  );
+  return <MainView id="singlePost">{post && ((editMode && <PostForm setPosts={setPost} post={post} />) || <PostComponent post={post} setPosts={setPost} single />)}</MainView>;
 }

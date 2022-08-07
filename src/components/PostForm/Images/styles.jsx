@@ -9,6 +9,8 @@ const ImageIndicator = styled.p`
   margin-top: 5px;
   margin-bottom: 5px;
   text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
   span {
     vertical-align: -0.2em;
     color: #e70000;

@@ -7,28 +7,41 @@ const { likeMode } = require('../enums/likeMode.enum');
 const { PostModel } = require('../models/Post');
 const { ImageModel } = require('../models/Image');
 
+const filterEditedResponse = ({ status, body, images }) => {
+  let newImages = images.filter(img => !img.author);
+  images = images.filter(img => img.author).map(img => img._id);
+
+  return { status, body, images, newImages };
+};
+
+router.route('/page/:page').get(async (req, res) => {
+  // this will have more advanced filtering logic later on
+  console.log(req.params.page);
+
+  let count = await PostModel.count({});
+
+  // prettier-ignore
+  let posts = await PostModel
+  .find()
+  .sort({ createdAt: -1 })
+  .skip(req.params.page * 10)
+  .limit(10)
+  .populate('images')
+  .populate('author', 'nickname firstName lastName profilePicture');
+
+  res.status(200).send({ posts, count });
+});
+
 router
   .route('/')
-  .get(async (req, res) => {
-    // this will have more advanced filtering logic later on
-    let post = await PostModel.find().populate('images').populate('author', 'nickname firstName lastName profilePicture');
-    res.status(200).send(post.reverse());
-  })
   .post(async (req, res) => {
     try {
       let imageIds = await uploadImages(req.body.images, req);
       await PostModel.create({ ...req.body, author: req.userInSession, images: imageIds });
       res.status(200).send({ message: 'Entry Created' });
     } catch (err) {
-      console.log(err);
       return res.status(406).send({ message: 'Error while creating post', error: err });
     }
-  })
-  .patch((req, res) => {
-    res.status(200).send({ message: 'Entry created' });
-  })
-  .delete((req, res) => {
-    res.status(200).send({ message: 'Entry deleted' });
   })
   .all((req, res) => {
     res.status(405).send({ message: 'Use another method' });
@@ -40,17 +53,26 @@ router
     let post = await PostModel.findOne({ _id: ObjectId(req.params.id) })
       .populate('images')
       .populate('author', 'nickname firstName lastName profilePicture');
+
     res.status(200).send(post);
   })
-  .patch((req, res) => {
-    res.status(200).send({ message: 'Entry patched' });
+  .patch(async (req, res) => {
+    let id = req.body._id;
+    try {
+      let response = filterEditedResponse(req.body);
+      let imageIds = await uploadImages(response.newImages, req);
+      delete response.newImages;
+
+      response.images = response.images.concat(imageIds);
+      await PostModel.updateOne({ _id: ObjectId(id) }, response);
+
+      return res.status(200).send({ message: 'Entry patched' });
+    } catch (err) {
+      return res.status(406).send({ message: 'Error while creating post', error: err });
+    }
   })
   .delete(async (req, res) => {
     let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
-
-    await ImageModel.deleteMany({ _id: { $in: post.images } });
-    //  same for comments
-    // await ImageModel.deleteMany({ _id: { $in: post.images } });
 
     await post.delete();
 
@@ -84,14 +106,37 @@ router
     res.status(405).send({ message: 'Use another method' });
   });
 
+router.route('/byuser/:authorId/:page').get(async (req, res) => {
+  // this will have more advanced filtering logic later on
+
+  let count = await PostModel.count({ author: req.params.authorId });
+
+  // prettier-ignore
+  let posts = await PostModel
+    .find({author: req.params.authorId})
+    .sort({ createdAt: -1 })
+    .skip(req.params.page * 10)
+    .limit(10)
+    .populate('images')
+    .populate('author', 'nickname firstName lastName profilePicture');
+
+  res.status(200).send({ posts, count });
+});
+
 async function uploadImages(images, req) {
   if (!images) return;
   let imgIds = [];
 
   for (let i = 0; i < images.length; i++) {
-    let imgObject = await ImageModel.create({ name: images[i].name, data: images[i].data, md5: md5(images[i].data), author: req.userInSession });
+    let foundImage = await ImageModel.findOne({ md5: md5(images[i].data) });
 
-    imgIds.push(imgObject.id);
+    if (foundImage) {
+      imgIds.push(foundImage.id);
+    } else {
+      let imgObject = await ImageModel.create({ name: images[i].name, data: images[i].data, md5: md5(images[i].data), author: req.userInSession });
+
+      imgIds.push(imgObject.id);
+    }
   }
 
   return imgIds;
