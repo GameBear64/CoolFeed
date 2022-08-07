@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { Button } from '@mui/material';
 
 import { MainView } from './styles';
 import { UserContext } from '../context';
@@ -50,7 +51,7 @@ export function Profile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-  useEffect(() => {
+  const getUser = () => {
     if (id) {
       fetch(`${window.location.protocol}//${window.location.hostname}:3030/user/${id}`, {
         headers: {
@@ -70,10 +71,34 @@ export function Profile() {
         .then(res => res.json())
         .then(data => setProfile(data));
     }
+  };
 
-    fetchMoreData();
+  useEffect(() => {
+    getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, jwt, user]);
+
+  const addFriend = () => {
+    fetch(`${window.location.protocol}//${window.location.hostname}:3030/user/friend/${profile._id}`, {
+      method: 'post',
+      headers: {
+        jwt,
+        'content-type': 'application/json',
+      },
+    }).then(res => {
+      if (res.ok) getUser();
+    });
+    // .then(data => setProfile(data));
+  };
+
+  const friendButton = () => {
+    if (user?._id === profile?._id) return;
+    if (profile?.pendingFriends.includes(user?._id)) {
+      return <Button disabled>Friend request sent</Button>;
+    }
+
+    return <Button onClick={addFriend}>Add friend</Button>;
+  };
 
   return (
     <MainView id="profile">
@@ -82,7 +107,7 @@ export function Profile() {
       </h1>
       {profile?.nickname && <p>aka {profile.nickname}</p>}
 
-      {console.log(profile)}
+      {friendButton()}
 
       {posts.posts && (
         <InfiniteScroll

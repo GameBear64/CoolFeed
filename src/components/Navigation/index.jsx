@@ -28,8 +28,8 @@ export function Navbar() {
       navigate(`/profile`);
     }
 
-    if (event.target.dataset.item === 'notifications') {
-      navigate(`/profile/notifications`);
+    if (event.target.dataset.item === 'friends') {
+      navigate(`/profile/friends`);
     }
 
     setAnchorEl(null);
@@ -50,8 +50,8 @@ export function Navbar() {
         <MenuItem data-item="profile" onClick={handleClose}>
           Profile
         </MenuItem>
-        <MenuItem data-item="notifications" onClick={handleClose}>
-          Notifications
+        <MenuItem data-item="friends" onClick={handleClose}>
+          Friends
         </MenuItem>
         <MenuItem data-item="settings" onClick={handleClose}>
           Settings
