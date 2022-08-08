@@ -27,6 +27,7 @@ router.route('/page/:page').get(async (req, res) => {
   .skip(req.params.page * 10)
   .limit(10)
   .populate('images')
+  // .populate('comments')
   .populate('author', 'nickname firstName lastName profilePicture');
 
   res.status(200).send({ posts, count });
@@ -52,6 +53,13 @@ router
   .get(async (req, res) => {
     let post = await PostModel.findOne({ _id: ObjectId(req.params.id) })
       .populate('images')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'author',
+          select: ['nickname', 'firstName', 'lastName', 'profilePicture'],
+        },
+      })
       .populate('author', 'nickname firstName lastName profilePicture');
 
     res.status(200).send(post);
@@ -118,6 +126,7 @@ router.route('/byuser/:authorId/:page').get(async (req, res) => {
     .skip(req.params.page * 10)
     .limit(10)
     .populate('images')
+    // .populate('comments')
     .populate('author', 'nickname firstName lastName profilePicture');
 
   res.status(200).send({ posts, count });
