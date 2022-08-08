@@ -29,7 +29,10 @@ export function PostComments({ setPosts, post }) {
         'content-type': 'application/json',
       },
     }).then(response => {
-      if (response.ok) fetchPost(setPosts, _id);
+      if (response.ok) {
+        setCommentFelid('');
+        fetchPost(setPosts, _id);
+      }
     });
   };
 
