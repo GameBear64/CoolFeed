@@ -58,6 +58,7 @@ router
         populate: {
           path: 'author',
           select: ['nickname', 'firstName', 'lastName', 'profilePicture'],
+          // options: { $sort: [[{ $project: { $subtract: ['upVotes', 'downVotes'] } }, -1], { createdAt: -1 }] },
         },
       })
       .populate('author', 'nickname firstName lastName profilePicture');
