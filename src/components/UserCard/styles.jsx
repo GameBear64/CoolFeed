@@ -10,6 +10,7 @@ const ProfilePicture = styled.img`
 const Card = styled.div`
   background-color: #d0d0d0;
   border: 1px solid #bcbcbc;
+  border-radius: 1em;
   padding: 1em;
   margin: 2em 0;
   width: 60%;

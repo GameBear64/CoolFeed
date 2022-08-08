@@ -10,7 +10,7 @@ const ProfilePicture = styled.img`
 `;
 
 const MetaTab = styled(Grid)`
-  margin: 5px 0;
+  margin: 10px 0;
 `;
 
 export { ProfilePicture, MetaTab };

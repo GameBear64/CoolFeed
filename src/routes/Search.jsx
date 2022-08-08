@@ -18,6 +18,7 @@ export function Search() {
   let [searchType, setSearchType] = useState('posts');
 
   const toggleSearchType = () => {
+    setResult([]);
     setSearchType(p => (p === 'posts' ? 'users' : 'posts'));
   };
 

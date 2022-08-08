@@ -8,13 +8,23 @@ const { UserModel } = require('../models/User');
 router.route('/:type/:term').get(async (req, res) => {
   if (req.params.type === searchTypes.Posts) {
     let result = await PostModel.find({ body: { $regex: req.params.term, $options: 'i' } })
-      .limit(10)
+      .sort({ createdAt: -1 })
+      .limit(20)
       .populate('images')
       .populate('author', 'nickname firstName lastName profilePicture');
 
     return res.status(200).send(result);
   } else if (req.params.type === searchTypes.Users) {
-    let result = await UserModel.find({ $or: [{ firstName: { $regex: req.params.term, $options: 'i' } }, { lastName: { $regex: req.params.term, $options: 'i' } }, { nickname: { $regex: req.params.term, $options: 'i' } }] }).limit(10);
+    //prettier-ignore
+    let result = await UserModel.find(
+      { $or: [
+        { firstName: { $regex: req.params.term, $options: 'i' } }, 
+        { lastName: { $regex: req.params.term, $options: 'i' } }, 
+        { nickname: { $regex: req.params.term, $options: 'i' } }
+      ]
+    })
+    .sort({ createdAt: -1 })
+    .limit(20);
 
     return res.status(200).send(result);
   } else {
