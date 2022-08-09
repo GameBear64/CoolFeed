@@ -133,7 +133,7 @@ router
     // get most relevant info
     post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
 
-    res.status(200).send({ message: 'Entry patched', likes: post.likes.length });
+    res.status(200).send({ message: 'Entry patched', likes: post.likes });
   })
   .all((req, res) => {
     res.status(405).send({ message: 'Use another method' });
