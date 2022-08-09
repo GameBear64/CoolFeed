@@ -6,6 +6,7 @@ const { likeMode } = require('../enums/likeMode.enum');
 
 const { PostModel } = require('../models/Post');
 const { ImageModel } = require('../models/Image');
+const { CommentModel } = require('../models/Comment');
 
 const filterEditedResponse = ({ status, body, images }) => {
   let newImages = images.filter(img => !img.author);
@@ -51,6 +52,19 @@ router
 router
   .route('/:id')
   .get(async (req, res) => {
+    // let commentsFiltering = await CommentModel.aggregate([
+    //   {
+    //     $project: {
+    //       score: { $subtract: ['$upVotes', '$downVotes'] },
+    //     },
+    //   },
+    //   {
+    //     $sort: { score: -1 },
+    //   },
+    // ]);
+
+    // console.log(commentsFiltering);
+
     let post = await PostModel.findOne({ _id: ObjectId(req.params.id) })
       .populate('images')
       .populate({
@@ -58,7 +72,12 @@ router
         populate: {
           path: 'author',
           select: ['nickname', 'firstName', 'lastName', 'profilePicture'],
-          // options: { $sort: [[{ $project: { $subtract: ['upVotes', 'downVotes'] } }, -1], { createdAt: -1 }] },
+        },
+        options: {
+          project: {
+            score: { $subtract: ['$upVotes', '$downVotes'] },
+          },
+          sort: { score: -1, createdAt: -1 },
         },
       })
       .populate('author', 'nickname firstName lastName profilePicture');
@@ -66,7 +85,7 @@ router
     res.status(200).send(post);
   })
   .patch(async (req, res) => {
-    let id = req.body._id;
+    let id = req.body._id; //coz i filter it out later
     try {
       let response = filterEditedResponse(req.body);
       let imageIds = await uploadImages(response.newImages, req);
@@ -77,15 +96,16 @@ router
 
       return res.status(200).send({ message: 'Entry patched' });
     } catch (err) {
-      return res.status(406).send({ message: 'Error while creating post', error: err });
+      return res.status(406).send({ message: 'Error while editing post', error: err });
     }
   })
   .delete(async (req, res) => {
     let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
 
     await post.delete();
+    await CommentModel.deleteMany({ _id: { $in: post.comments } });
 
-    res.status(200).send({ message: 'Entry deleted' });
+    await res.status(200).send({ message: 'Entry deleted' });
   })
   .all((req, res) => {
     res.status(405).send({ message: 'Use another method' });

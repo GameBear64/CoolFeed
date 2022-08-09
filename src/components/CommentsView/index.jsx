@@ -1,10 +1,12 @@
 import { useState, useContext } from 'react';
-import { Fade, TextField, Button, Grid, Icon } from '@mui/material';
+import { Fade, TextField, Button, Grid } from '@mui/material';
 import Twemoji from 'react-twemoji';
 import { Link } from 'react-router-dom';
 
 import { UserContext } from './../../context/index';
-import { CommentImage, CommentBody, Comment } from './styles';
+import { CommentImage, CommentTimestamp, Comment } from './styles';
+
+import { CommentSettings } from './Settings/index';
 
 import fetchPost from './../../utils/fetchPost';
 import timeSince from './../../utils/timeSince';
@@ -40,7 +42,7 @@ export function PostComments({ setPosts, post }) {
     <div>
       <Grid container style={{ marginBottom: '2em' }}>
         <Grid item xs={10}>
-          <TextField id="loginEmail" label="Write a comment!" size="small" value={commentFelid} onChange={handleComment} style={{ width: '100%' }} />
+          <TextField id="commentForm" label="Write a comment!" size="small" value={commentFelid} onChange={handleComment} style={{ width: '100%' }} />
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'right' }}>
           <Button onClick={handlePostComment}>Post</Button>
@@ -70,18 +72,17 @@ export function PostComments({ setPosts, post }) {
                     }}
                   >
                     <Link to={`/profile/${author._id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                      <h2>{author?.nickname || `${author?.firstName} ${author?.lastName || ''}`} </h2>
+                      <h3>{author?.nickname || `${author?.firstName} ${author?.lastName || ''}`} </h3>
                     </Link>
-                    <Button>
-                      <Icon>more_horiz</Icon>
-                    </Button>
+                    <CommentTimestamp>
+                      · {timeSince(createdAt)} {createdAt !== updatedAt ? ' · edited' : ''}
+                    </CommentTimestamp>
+                    <CommentSettings setPosts={setPosts} id={_id} postId={post._id} body={body} />
                   </Grid>
-                  <p>
-                    {timeSince(createdAt)} {createdAt !== updatedAt ? ' · edited' : ''}
-                  </p>
+
+                  <p>{body}</p>
                 </Twemoji>
               </Grid>
-              <CommentBody>{body}</CommentBody>
             </Comment>
           </Fade>
         ))}

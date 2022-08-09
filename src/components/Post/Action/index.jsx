@@ -9,7 +9,7 @@ import { UserContext } from './../../../context/index';
 
 export function PostComponentAction({ post }) {
   const { jwt } = useContext(UserContext);
-  let { _id, likes, emote } = post;
+  let { _id, likes, emote, comments } = post;
 
   const [likesState, setLikesState] = useState(likes?.length);
 
@@ -45,6 +45,7 @@ export function PostComponentAction({ post }) {
       </LikeButton>
       <Button onClick={goToPost}>
         <Icon>mode_comment</Icon>
+        <p style={{ padding: '0 0 0 0.5em' }}>{comments?.length}</p>
       </Button>
       <Tooltip title="Copy to clipboard">
         <Button onClick={copyToClipboard}>
