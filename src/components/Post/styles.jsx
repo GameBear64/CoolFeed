@@ -18,8 +18,7 @@ const PostBody = styled(Twemoji)`
 const Post = styled.div`
   background-color: #d0d0d0;
   border: 1px solid #bcbcbc;
-  /* border-left: none;
-  border-right: none; */
+  border-radius: 0.5em;
   margin: 2em 0;
 `;
 

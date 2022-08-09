@@ -4,6 +4,7 @@ const settings = require('./../../settings.json');
 const authRoutes = require('./Auth');
 const userRoutes = require('./User');
 const postRoutes = require('./Post');
+const searchRoutes = require('./Search');
 const commentRoutes = require('./Comment');
 
 module.exports = function (app) {
@@ -24,6 +25,7 @@ module.exports = function (app) {
   // routes
   app.use('/user', userRoutes);
   app.use('/post', postRoutes);
+  app.use('/search', searchRoutes);
   app.use('/comment', commentRoutes);
 
   //if 404

@@ -6,6 +6,7 @@ const { likeMode } = require('../enums/likeMode.enum');
 
 const { PostModel } = require('../models/Post');
 const { ImageModel } = require('../models/Image');
+const { CommentModel } = require('../models/Comment');
 
 const filterEditedResponse = ({ status, body, images }) => {
   let newImages = images.filter(img => !img.author);
@@ -50,33 +51,65 @@ router
 router
   .route('/:id')
   .get(async (req, res) => {
+    // let commentsFiltering = await CommentModel.aggregate([
+    //   {
+    //     $project: {
+    //       score: { $subtract: ['$upVotes', '$downVotes'] },
+    //     },
+    //   },
+    //   {
+    //     $sort: { score: -1 },
+    //   },
+    // ]);
+
+    // console.log(commentsFiltering);
+
     let post = await PostModel.findOne({ _id: ObjectId(req.params.id) })
       .populate('images')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'author',
+          select: ['nickname', 'firstName', 'lastName', 'profilePicture'],
+        },
+        options: {
+          project: {
+            score: { $subtract: ['$upVotes', '$downVotes'] },
+          },
+          sort: { score: -1, createdAt: -1 },
+        },
+      })
       .populate('author', 'nickname firstName lastName profilePicture');
 
     res.status(200).send(post);
   })
   .patch(async (req, res) => {
-    let id = req.body._id;
+    let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
+
+    if (req.userInSession !== post.author.toString()) return res.status(401).send({ message: 'Not Authorized' });
+
     try {
       let response = filterEditedResponse(req.body);
       let imageIds = await uploadImages(response.newImages, req);
       delete response.newImages;
 
       response.images = response.images.concat(imageIds);
-      await PostModel.updateOne({ _id: ObjectId(id) }, response);
+      await post.update(response);
 
       return res.status(200).send({ message: 'Entry patched' });
     } catch (err) {
-      return res.status(406).send({ message: 'Error while creating post', error: err });
+      return res.status(406).send({ message: 'Error while editing post', error: err });
     }
   })
   .delete(async (req, res) => {
     let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
 
-    await post.delete();
+    if (req.userInSession !== post.author.toString()) return res.status(401).send({ message: 'Not Authorized' });
 
-    res.status(200).send({ message: 'Entry deleted' });
+    await post.delete();
+    await CommentModel.deleteMany({ _id: { $in: post.comments } });
+
+    await res.status(200).send({ message: 'Entry deleted' });
   })
   .all((req, res) => {
     res.status(405).send({ message: 'Use another method' });

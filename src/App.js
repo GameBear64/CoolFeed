@@ -13,6 +13,7 @@ import { Login } from './routes/Login';
 import { Register } from './routes/Register';
 import { Profile } from './routes/Profile';
 import { Friends } from './routes/Friends';
+import { Search } from './routes/Search';
 
 export default function App() {
   return (
@@ -33,7 +34,7 @@ export default function App() {
               <Route path="settings" element={<Profile />} />
               <Route path="friends" element={<Friends />} />
             </Route>
-            <Route path="/search" element={<Profile />} />
+            <Route path="/search" element={<Search />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>

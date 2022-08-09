@@ -48,6 +48,7 @@ export function PostComponentMetaSettings({ setPosts, post, single }) {
           fetchFeed(setPosts, 0);
         });
     }
+    navigate('/');
     setOpenWarning(false);
   };
 
@@ -58,7 +59,7 @@ export function PostComponentMetaSettings({ setPosts, post, single }) {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">Deleted posts cannot be recovered, all contents of this post and everything related to it will be delete, proceed? </DialogContentText>
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ justifyContent: 'space-between' }}>
           <Button data-delete="no" onClick={handleDialogOption}>
             No, go back
           </Button>

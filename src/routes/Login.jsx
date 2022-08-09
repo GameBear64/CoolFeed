@@ -30,7 +30,6 @@ export function Login() {
   };
 
   const handleSubmit = () => {
-    console.log(state);
     fetch(`${window.location.protocol}//${window.location.hostname}:3030/auth/login`, {
       method: 'post',
       body: JSON.stringify(state),
