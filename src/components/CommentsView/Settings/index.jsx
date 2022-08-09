@@ -4,8 +4,8 @@ import { TextField, Button, Icon, Menu, MenuItem, Dialog, DialogTitle, DialogCon
 import { UserContext } from './../../../context/index';
 import fetchPost from './../../../utils/fetchPost';
 
-export function CommentSettings({ setPosts, id, postId, body }) {
-  const { jwt } = useContext(UserContext);
+export function CommentSettings({ setPosts, id, postId, body, author }) {
+  const { user, jwt } = useContext(UserContext);
   const [commentFelid, setCommentFelid] = useState(body);
 
   const [menuElement, setMenuElement] = useState(null);
@@ -100,9 +100,11 @@ export function CommentSettings({ setPosts, id, postId, body }) {
         <MenuItem data-item="delete" onClick={handleMenuOption}>
           Delete
         </MenuItem>
-        <MenuItem data-item="edit" onClick={handleMenuOption}>
-          Edit
-        </MenuItem>
+        {author._id === user._id && (
+          <MenuItem data-item="edit" onClick={handleMenuOption}>
+            Edit
+          </MenuItem>
+        )}
       </Menu>
 
       <div id="settings">

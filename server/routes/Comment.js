@@ -13,9 +13,12 @@ router
     res.status(200).send({ message: 'Entry created' });
   })
   .patch(async (req, res) => {
-    console.log('hit', req.params.postOrCommentId, req.body.body);
+    let targetComment = await CommentModel.findOne({ _id: ObjectId(req.params.postOrCommentId) });
+
+    if (req.userInSession !== targetComment.author.toString()) return res.status(401).send({ message: 'Not Authorized' });
+
     try {
-      await CommentModel.updateOne({ _id: ObjectId(req.params.postOrCommentId) }, { body: req.body.body });
+      await targetComment.update({ body: req.body.body });
 
       return res.status(200).send({ message: 'Entry patched' });
     } catch (err) {
@@ -30,8 +33,11 @@ router
   .route('/:postId/:commentId')
   .delete(async (req, res) => {
     let comment = await CommentModel.findOne({ _id: ObjectId(req.params.commentId) });
+    let post = await PostModel.findOne({ _id: ObjectId(req.params.postId) });
 
-    await PostModel.updateOne({ _id: ObjectId(req.params.postId) }, { $pull: { comments: comment._id } }, { timestamps: false });
+    if (req.userInSession !== comment.author.toString() && req.userInSession !== post.author.toString()) return res.status(401).send({ message: 'Not Authorized' });
+
+    await post.update({ $pull: { comments: comment._id } }, { timestamps: false });
 
     await comment.delete();
     res.status(200).send({ message: 'Entry deleted' });
