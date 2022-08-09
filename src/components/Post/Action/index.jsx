@@ -8,10 +8,11 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { UserContext } from './../../../context/index';
 
 export function PostComponentAction({ post }) {
-  const { jwt } = useContext(UserContext);
+  const { user, jwt } = useContext(UserContext);
   let { _id, likes, emote, comments } = post;
 
   const [likesState, setLikesState] = useState(likes?.length);
+  const [likeIndicator, setLikeIndicator] = useState(likes.includes(user._id));
 
   const navigate = useNavigate();
 
@@ -25,7 +26,9 @@ export function PostComponentAction({ post }) {
     })
       .then(response => response.json())
       .then(data => {
-        setLikesState(data.likes);
+        console.log(data);
+        setLikesState(data.likes?.length);
+        setLikeIndicator(data.likes.includes(user._id));
       });
   };
 
@@ -39,7 +42,17 @@ export function PostComponentAction({ post }) {
 
   return (
     <Grid id="actions" container direction="row" justifyContent="space-around" alignItems="center">
-      <LikeButton onClick={handleLIke}>
+      <LikeButton
+        onClick={handleLIke}
+        color={likeIndicator ? 'success' : 'primary'}
+        style={
+          likeIndicator
+            ? {
+                borderBottom: '3px solid green',
+              }
+            : {}
+        }
+      >
         <Twemoji>{emote}</Twemoji>
         {likesState}
       </LikeButton>
