@@ -38,7 +38,7 @@ export function Navbar() {
     }
 
     if (event.target.dataset.item === 'friends') {
-      navigate(`/profile/friends`);
+      navigate(`/friends`);
     }
 
     setAnchorEl(null);

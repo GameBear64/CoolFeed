@@ -30,10 +30,10 @@ export default function App() {
               <Route path="edit" element={<Post />} />
             </Route>
             <Route path="/profile" element={<Profile />}>
+              {/* <Route path="settings" element={<Profile />} /> */}
               <Route path=":id" element={<Profile />} />
-              <Route path="settings" element={<Profile />} />
-              <Route path="friends" element={<Friends />} />
             </Route>
+            <Route path="/friends" element={<Friends />} />
             <Route path="/search" element={<Search />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
