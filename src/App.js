@@ -12,6 +12,7 @@ import { Post } from './routes/Post';
 import { Login } from './routes/Login';
 import { Register } from './routes/Register';
 import { Profile } from './routes/Profile';
+import { Search } from './routes/Search';
 
 export default function App() {
   return (
@@ -32,7 +33,7 @@ export default function App() {
               <Route path="settings" element={<Profile />} />
               {/* <Route path="notifications" element={<Profile />} /> */}
             </Route>
-            <Route path="/search" element={<Profile />} />
+            <Route path="/search" element={<Search />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>
