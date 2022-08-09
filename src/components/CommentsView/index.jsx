@@ -12,7 +12,7 @@ import fetchPost from './../../utils/fetchPost';
 import timeSince from './../../utils/timeSince';
 
 export function PostComments({ setPosts, post }) {
-  const { jwt } = useContext(UserContext);
+  const { user, jwt } = useContext(UserContext);
   let { _id, comments } = post;
   console.log(post);
 
@@ -77,7 +77,7 @@ export function PostComments({ setPosts, post }) {
                     <CommentTimestamp>
                       · {timeSince(createdAt)} {createdAt !== updatedAt ? ' · edited' : ''}
                     </CommentTimestamp>
-                    <CommentSettings setPosts={setPosts} id={_id} postId={post._id} body={body} />
+                    {(user._id === author._id || user._id === post.author._id) && <CommentSettings setPosts={setPosts} id={_id} postId={post._id} body={body} author={author} />}
                   </Grid>
 
                   <p>{body}</p>

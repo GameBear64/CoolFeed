@@ -28,7 +28,6 @@ router.route('/page/:page').get(async (req, res) => {
   .skip(req.params.page * 10)
   .limit(10)
   .populate('images')
-  // .populate('comments')
   .populate('author', 'nickname firstName lastName profilePicture');
 
   res.status(200).send({ posts, count });
@@ -85,14 +84,17 @@ router
     res.status(200).send(post);
   })
   .patch(async (req, res) => {
-    let id = req.body._id; //coz i filter it out later
+    let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
+
+    if (req.userInSession !== post.author.toString()) return res.status(401).send({ message: 'Not Authorized' });
+
     try {
       let response = filterEditedResponse(req.body);
       let imageIds = await uploadImages(response.newImages, req);
       delete response.newImages;
 
       response.images = response.images.concat(imageIds);
-      await PostModel.updateOne({ _id: ObjectId(id) }, response);
+      await post.update(response);
 
       return res.status(200).send({ message: 'Entry patched' });
     } catch (err) {
@@ -101,6 +103,8 @@ router
   })
   .delete(async (req, res) => {
     let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
+
+    if (req.userInSession !== post.author.toString()) return res.status(401).send({ message: 'Not Authorized' });
 
     await post.delete();
     await CommentModel.deleteMany({ _id: { $in: post.comments } });
@@ -147,7 +151,6 @@ router.route('/byuser/:authorId/:page').get(async (req, res) => {
     .skip(req.params.page * 10)
     .limit(10)
     .populate('images')
-    // .populate('comments')
     .populate('author', 'nickname firstName lastName profilePicture');
 
   res.status(200).send({ posts, count });
