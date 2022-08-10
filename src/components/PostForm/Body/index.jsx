@@ -1,12 +1,14 @@
 import { TextField, Grid } from '@mui/material';
 
+import emojiPicker from './../../../utils/emojiPicker';
+
 export function PostFormBody({ postBody, setPostBody }) {
   const handleBodyChange = event => {
-    setPostBody(s => ({ ...s, body: event.target.value }));
+    setPostBody(s => ({ ...s, body: emojiPicker(event.target.value) }));
   };
 
   const handleStatusChange = event => {
-    setPostBody(s => ({ ...s, status: event.target.value }));
+    setPostBody(s => ({ ...s, status: emojiPicker(event.target.value) }));
   };
 
   return (

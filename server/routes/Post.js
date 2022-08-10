@@ -4,6 +4,7 @@ const md5 = require('md5');
 
 const { likeMode } = require('../enums/likeMode.enum');
 
+const { UserModel } = require('../models/User');
 const { PostModel } = require('../models/Post');
 const { ImageModel } = require('../models/Image');
 const { CommentModel } = require('../models/Comment');
@@ -16,14 +17,14 @@ const filterEditedResponse = ({ status, body, images }) => {
 };
 
 router.route('/page/:page').get(async (req, res) => {
-  // this will have more advanced filtering logic later on
-  console.log(req.params.page);
+  let { friends } = await UserModel.findOne({ _id: ObjectId(req.userInSession) });
+  friends.push(req.userInSession);
 
-  let count = await PostModel.count({});
+  let count = await PostModel.count({ author: { $in: friends } });
 
   // prettier-ignore
   let posts = await PostModel
-  .find()
+  .find({author: {$in: friends}})
   .sort({ createdAt: -1 })
   .skip(req.params.page * 10)
   .limit(10)
@@ -140,8 +141,6 @@ router
   });
 
 router.route('/byuser/:authorId/:page').get(async (req, res) => {
-  // this will have more advanced filtering logic later on
-
   let count = await PostModel.count({ author: req.params.authorId });
 
   // prettier-ignore

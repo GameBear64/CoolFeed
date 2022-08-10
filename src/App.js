@@ -12,6 +12,7 @@ import { Post } from './routes/Post';
 import { Login } from './routes/Login';
 import { Register } from './routes/Register';
 import { Profile } from './routes/Profile';
+import { Friends } from './routes/Friends';
 import { Search } from './routes/Search';
 
 export default function App() {
@@ -29,10 +30,10 @@ export default function App() {
               <Route path="edit" element={<Post />} />
             </Route>
             <Route path="/profile" element={<Profile />}>
+              {/* <Route path="settings" element={<Profile />} /> */}
               <Route path=":id" element={<Profile />} />
-              <Route path="settings" element={<Profile />} />
-              {/* <Route path="notifications" element={<Profile />} /> */}
             </Route>
+            <Route path="/friends" element={<Friends />} />
             <Route path="/search" element={<Search />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
