@@ -7,6 +7,7 @@ import { MainView } from './styles';
 import { UserContext } from '../context';
 
 import { PostComponent } from '../components/Post/index';
+import { FriendButton } from './../components/FriendButton/index';
 
 export function Profile() {
   const { id } = useParams();
@@ -78,28 +79,6 @@ export function Profile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, jwt, user]);
 
-  const addFriend = () => {
-    fetch(`${window.location.protocol}//${window.location.hostname}:3030/user/friend/${profile._id}`, {
-      method: 'post',
-      headers: {
-        jwt,
-        'content-type': 'application/json',
-      },
-    }).then(res => {
-      if (res.ok) getUser();
-    });
-    // .then(data => setProfile(data));
-  };
-
-  const friendButton = () => {
-    if (user?._id === profile?._id) return;
-    if (profile?.pendingFriends.includes(user?._id)) {
-      return <Button disabled>Friend request sent</Button>;
-    }
-
-    return <Button onClick={addFriend}>Add friend</Button>;
-  };
-
   return (
     <MainView id="profile">
       <h1>
@@ -107,7 +86,7 @@ export function Profile() {
       </h1>
       {profile?.nickname && <p>aka {profile.nickname}</p>}
 
-      {friendButton()}
+      <FriendButton profile={profile} getUser={getUser} />
 
       {posts.posts && (
         <InfiniteScroll

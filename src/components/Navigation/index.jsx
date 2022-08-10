@@ -45,8 +45,12 @@ export function Navbar() {
   };
 
   const openSearch = () => {
-    console.log('opening search');
     navigate(`/search`);
+  };
+
+  const closeSearch = () => {
+    setSearchTerm('');
+    navigate(`/`);
   };
 
   const handleSearch = event => {
@@ -57,9 +61,9 @@ export function Navbar() {
 
   return (
     <Grid id="nav" container direction="row" justifyContent="space-between" alignItems="center" style={{ backgroundColor: 'lightblue' }}>
-      <Link to={'/'}>
+      <Button onClick={closeSearch}>
         <Icon>home</Icon> Home
-      </Link>
+      </Button>
 
       <TextField id="search" label="Search" size="small" style={{ width: '50vw' }} value={searchTerm} onFocus={openSearch} onChange={handleSearch} />
 
