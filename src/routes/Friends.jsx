@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Button } from '@mui/material';
+// import { Button } from '@mui/material';
 
 import { MainView } from './styles';
 import { UserContext } from '../context';
@@ -12,7 +12,7 @@ export function Friends() {
   const [profile, setProfile] = useState(null);
 
   const getUser = () => {
-    fetch(`${window.location.protocol}//${window.location.hostname}:3030/user/${user._id}`, {
+    fetch(`${window.location.protocol}//${window.location.hostname}:3030/user/friends/${user._id}`, {
       headers: {
         jwt,
         'content-type': 'application/json',
@@ -30,6 +30,8 @@ export function Friends() {
   return (
     <MainView id="profile">
       <h1>Friends</h1>
+
+      {console.log(profile)}
 
       <h2>Pending friends</h2>
 

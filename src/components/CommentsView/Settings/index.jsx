@@ -3,6 +3,7 @@ import { TextField, Button, Icon, Menu, MenuItem, Dialog, DialogTitle, DialogCon
 
 import { UserContext } from './../../../context/index';
 import fetchPost from './../../../utils/fetchPost';
+import emojiPicker from './../../../utils/emojiPicker';
 
 export function CommentSettings({ setPosts, id, postId, body, author }) {
   const { user, jwt } = useContext(UserContext);
@@ -15,7 +16,7 @@ export function CommentSettings({ setPosts, id, postId, body, author }) {
   const [openEdit, setOpenEdit] = useState(false);
 
   const handleComment = event => {
-    setCommentFelid(event.target.value);
+    setCommentFelid(emojiPicker(event.target.value));
   };
 
   const handleMenuOpen = event => {
