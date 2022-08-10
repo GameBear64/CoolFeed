@@ -3,6 +3,7 @@ import { TextField, Button, Icon, Menu, MenuItem, Dialog, DialogTitle, DialogCon
 
 import { UserContext } from './../../../context/index';
 import fetchPost from './../../../utils/fetchPost';
+import emojiPicker from './../../../utils/emojiPicker';
 
 export function CommentSettings({ setPosts, id, postId, body, author }) {
   const { user, jwt } = useContext(UserContext);
@@ -15,7 +16,7 @@ export function CommentSettings({ setPosts, id, postId, body, author }) {
   const [openEdit, setOpenEdit] = useState(false);
 
   const handleComment = event => {
-    setCommentFelid(event.target.value);
+    setCommentFelid(emojiPicker(event.target.value));
   };
 
   const handleMenuOpen = event => {
@@ -84,7 +85,7 @@ export function CommentSettings({ setPosts, id, postId, body, author }) {
       <Dialog open={openEdit} onClose={handleEditOption} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
         <DialogTitle id="alert-dialog-title">Editing comment</DialogTitle>
         <DialogContent>
-          <TextField id="commentEdit" label="Edit comment" size="small" value={commentFelid} onChange={handleComment} style={{ width: '30vw', marginTop: '1em', marginBottom: '1em' }} />
+          <TextField id="commentEdit" label="Edit comment" size="small" value={commentFelid} onChange={handleComment} style={{ width: '30em', marginTop: '1em', marginBottom: '1em' }} />
         </DialogContent>
         <DialogActions style={{ justifyContent: 'space-between' }}>
           <Button data-delete="discard" onClick={handleEditOption}>

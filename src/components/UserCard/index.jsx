@@ -1,10 +1,17 @@
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Fade, Grid, Button } from '@mui/material';
 import Twemoji from 'react-twemoji';
 
+import { UserContext } from '../../context/index';
+
+import { FriendButton } from './../FriendButton/index';
+
 import { ProfilePicture, Card } from './styles';
 
-export function UserCard({ user }) {
+export function UserCard({ profile, getUser }) {
+  let { user, jwt } = useContext(UserContext);
+
   return (
     <Fade in timeout={500}>
       <Card id="userCard">
@@ -16,13 +23,13 @@ export function UserCard({ user }) {
             flexDirection: 'row',
           }}
         >
-          <ProfilePicture src={user?.profilePicture} alt="ProfilePicture" />
+          <ProfilePicture src={profile?.profilePicture} alt="ProfilePicture" />
 
           <Twemoji>
-            <Link to={`/profile/${user._id}`} style={{ textDecoration: 'none', color: 'black' }}>
-              <h2>{user?.nickname || `${user?.firstName} ${user?.lastName || ''}`} </h2>
+            <Link to={`/profile/${profile._id}`} style={{ textDecoration: 'none', color: 'black' }}>
+              <h2>{profile?.nickname || `${profile?.firstName} ${profile?.lastName || ''}`} </h2>
             </Link>
-            <Button> Add Friend </Button>
+            <FriendButton profile={profile} getUser={getUser} />
           </Twemoji>
         </Grid>
       </Card>

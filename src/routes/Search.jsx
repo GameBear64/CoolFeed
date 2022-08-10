@@ -24,6 +24,13 @@ export function Search() {
 
   useEffect(() => {
     if (!search) return;
+
+    updateResults();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, jwt, searchType]);
+
+  const updateResults = () => {
     fetch(`${window.location.protocol}//${window.location.hostname}:3030/search/${searchType}/${search}`, {
       headers: {
         jwt,
@@ -32,16 +39,15 @@ export function Search() {
     })
       .then(res => res.json())
       .then(data => setResult(data));
-  }, [search, jwt, searchType]);
+  };
 
   return (
     <MainView id="profile">
       <h1>Search {searchType}</h1>
       <Button onClick={toggleSearchType}>Toggle Search type</Button>
-      {console.log('aaaha', result)}
       {result.length === 0 && search && <p>No results for {search}</p>}
       {result.length > 0 && search && <p>Results for {search}</p>}
-      {result.length > 0 && searchType === 'users' && result.map(user => <UserCard key={user._id} user={user} />)}
+      {result.length > 0 && searchType === 'users' && result.map(user => <UserCard key={user._id} profile={user} getUser={updateResults} />)}
       {result.length > 0 && searchType === 'posts' && result.map(post => <PostComponent key={post._id} post={post} searched />)}
     </MainView>
   );

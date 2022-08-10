@@ -37,16 +37,20 @@ export function Navbar() {
       navigate(`/profile`);
     }
 
-    if (event.target.dataset.item === 'notifications') {
-      navigate(`/profile/notifications`);
+    if (event.target.dataset.item === 'friends') {
+      navigate(`/friends`);
     }
 
     setAnchorEl(null);
   };
 
   const openSearch = () => {
-    console.log('opening search');
     navigate(`/search`);
+  };
+
+  const closeSearch = () => {
+    setSearchTerm('');
+    navigate(`/`);
   };
 
   const handleSearch = event => {
@@ -57,9 +61,9 @@ export function Navbar() {
 
   return (
     <Grid id="nav" container direction="row" justifyContent="space-between" alignItems="center" style={{ backgroundColor: 'lightblue' }}>
-      <Link to={'/'}>
+      <Button onClick={closeSearch}>
         <Icon>home</Icon> Home
-      </Link>
+      </Button>
 
       <TextField id="search" label="Search" size="small" style={{ width: '50vw' }} value={searchTerm} onFocus={openSearch} onChange={handleSearch} />
 
@@ -71,8 +75,8 @@ export function Navbar() {
         <MenuItem data-item="profile" onClick={handleClose}>
           Profile
         </MenuItem>
-        <MenuItem data-item="notifications" onClick={handleClose}>
-          Notifications
+        <MenuItem data-item="friends" onClick={handleClose}>
+          Friends
         </MenuItem>
         <MenuItem data-item="settings" onClick={handleClose}>
           Settings

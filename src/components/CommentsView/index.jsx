@@ -10,16 +10,16 @@ import { CommentSettings } from './Settings/index';
 
 import fetchPost from './../../utils/fetchPost';
 import timeSince from './../../utils/timeSince';
+import emojiPicker from './../../utils/emojiPicker';
 
 export function PostComments({ setPosts, post }) {
   const { user, jwt } = useContext(UserContext);
   let { _id, comments } = post;
-  console.log(post);
 
   const [commentFelid, setCommentFelid] = useState('');
 
   const handleComment = event => {
-    setCommentFelid(event.target.value);
+    setCommentFelid(emojiPicker(event.target.value));
   };
 
   const handlePostComment = () => {

@@ -1,11 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { Button } from '@mui/material';
 
 import { MainView } from './styles';
 import { UserContext } from '../context';
 
 import { PostComponent } from '../components/Post/index';
+import { FriendButton } from './../components/FriendButton/index';
 
 export function Profile() {
   const { id } = useParams();
@@ -50,7 +52,7 @@ export function Profile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-  useEffect(() => {
+  const getUser = () => {
     if (id) {
       fetch(`${window.location.protocol}//${window.location.hostname}:3030/user/${id}`, {
         headers: {
@@ -70,8 +72,10 @@ export function Profile() {
         .then(res => res.json())
         .then(data => setProfile(data));
     }
+  };
 
-    fetchMoreData();
+  useEffect(() => {
+    getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, jwt, user]);
 
@@ -82,7 +86,7 @@ export function Profile() {
       </h1>
       {profile?.nickname && <p>aka {profile.nickname}</p>}
 
-      {console.log(profile)}
+      <FriendButton profile={profile} getUser={getUser} />
 
       {posts.posts && (
         <InfiniteScroll
