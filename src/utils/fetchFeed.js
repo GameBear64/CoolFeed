@@ -8,7 +8,6 @@ export default async function fetchFeed(setPosts, page) {
     .then(res => res.json())
     .then(data => {
       if (page === 0) {
-        // console.log('returned posts', data);
         setPosts(data);
       } else {
         setPosts(prev => {

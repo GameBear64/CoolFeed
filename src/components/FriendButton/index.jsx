@@ -42,7 +42,7 @@ export function FriendButton({ profile, getUser }) {
         </>
       );
     }
-    if (profile?.friends.includes(user?._id)) {
+    if (profile?.friends.some(fr => fr._id === user?._id)) {
       return (
         <>
           <Button disabled>Friends</Button>

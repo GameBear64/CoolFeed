@@ -19,8 +19,6 @@ export function Feed() {
   const fetchMoreData = () => {
     fetchFeed(setPosts, page);
     setPage(p => p + 1);
-    console.log('page', page);
-    console.log('posts', posts);
   };
 
   useEffect(() => {

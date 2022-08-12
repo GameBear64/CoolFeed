@@ -4,9 +4,11 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { UserContext } from './../../context/index';
 
 const RouteGuardian = () => {
-  let { user } = useContext(UserContext);
+  let storage = useContext(UserContext);
 
-  if (!user) return <Navigate to="/register" replace />;
+  console.log(storage);
+
+  if (!storage?.user) return <Navigate to="/register" replace />;
 
   return <Outlet />;
 };

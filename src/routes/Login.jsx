@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, TextField, Box } from '@mui/material';
+import { useNavigate, Link } from 'react-router-dom';
+import { Button, Box } from '@mui/material';
 
 import { UserContext, UserUpdateContext } from '../context';
+
+import { MainView, FullWidthInput, Title, OtherOption } from './styles';
 
 export function Login() {
   const [state, setState] = useState({
@@ -14,7 +16,7 @@ export function Login() {
 
   let setUser = useContext(UserUpdateContext);
 
-  let { user } = useContext(UserContext);
+  let user = useContext(UserContext);
 
   useEffect(() => {
     if (user) return navigate('/');
@@ -39,27 +41,25 @@ export function Login() {
         if (res.ok) return res.json();
       })
       .then(data => {
-        console.log(data);
         window.localStorage.cf_data = JSON.stringify(data);
         setUser(data);
-        navigate('/');
       });
   };
 
   return (
-    <div id="login" style={{ backgroundColor: 'lightgray' }}>
-      <Box
-        component="form"
-        sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField id="loginEmail" label="Email" value={state.email} onChange={handleMail} />
-        <TextField id="loginPassword" label="Password" value={state.password} onChange={handlePassword} />
-        <Button onClick={handleSubmit}>Submit</Button>
+    <MainView id="login">
+      <Title>Login to your CoolFeed account</Title>
+
+      <FullWidthInput id="loginEmail" label="Email" value={state.email} onChange={handleMail} />
+      <FullWidthInput id="loginPassword" label="Password" type="password" value={state.password} onChange={handlePassword} />
+      <Box textAlign="center" style={{ margin: '1em' }}>
+        <Button onClick={handleSubmit} variant="contained">
+          Submit
+        </Button>
       </Box>
-    </div>
+      <OtherOption>
+        Don't have an account? <Link to="/register">Register here</Link>
+      </OtherOption>
+    </MainView>
   );
 }
