@@ -8,7 +8,7 @@ const { CommentModel } = require('../models/Comment');
 router
   .route('/')
   .patch(async (req, res) => {
-    await UserModel.updateOne({ _id: ObjectId(req.userInSession) }, { ...req.body });
+    if (req.body) await UserModel.updateOne({ _id: ObjectId(req.userInSession) }, { ...req.body });
   })
   .delete(async (req, res) => {
     await UserModel.deleteOne({ _id: ObjectId(req.userInSession) });

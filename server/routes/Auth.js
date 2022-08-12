@@ -38,6 +38,10 @@ router
     let userExists = await UserModel.findOne({ email: req.body.email });
     if (userExists) return res.status(403).send({ message: 'User exists' });
 
+    if (req.body?.firstName?.length > 15 || req.body?.firstName?.length > 15) return res.status(406).send({ message: 'Felid too long' });
+
+    if (req.body?.password?.length < 8 || req.body?.confirmPassword?.length < 8) return res.status(406).send({ message: 'Felid too short' });
+
     bcrypt.genSalt(10, function (err, salt) {
       bcrypt.hash(req.body?.password, salt, async function (err, hash) {
         req.body.password = hash;
@@ -67,6 +71,8 @@ router
     //confirm old password first
     bcrypt.compare(req.body?.oldPassword, userProfile.password).then(rez => {
       if (!rez) return res.status(401).send({ message: 'Wrong credentials' });
+
+      if (req.body?.password?.length < 8 || req.body?.confirmPassword?.length < 8) return res.status(406).send({ message: 'Felid too short' });
 
       if (req.body?.password !== req.body?.confirmPassword) return res.status(403).send({ message: "Passwords don't match" });
 

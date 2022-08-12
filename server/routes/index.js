@@ -1,5 +1,4 @@
-const jwt = require('jsonwebtoken');
-const settings = require('./../../settings.json');
+const checkAuth = require('./../middleware/checkAuth');
 
 const authRoutes = require('./Auth');
 const userRoutes = require('./User');
@@ -11,16 +10,8 @@ module.exports = function (app) {
   //special auth routes (special coz they are above the auth check)
   app.use('/auth', authRoutes);
 
-  // auth check
-  app.use((req, res, next) => {
-    try {
-      var decoded = jwt.verify(req.headers.jwt, settings.secret);
-      req.userInSession = decoded.id;
-      next();
-    } catch (err) {
-      return res.status(401).send({ message: 'Not Authorized' });
-    }
-  });
+  // auth middleware
+  app.use(checkAuth);
 
   // routes
   app.use('/user', userRoutes);

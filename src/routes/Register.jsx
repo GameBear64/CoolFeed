@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button, Box } from '@mui/material';
+import { ValidatorForm } from 'react-material-ui-form-validator';
 
 import { MainView, FullWidthInput, Title, OtherOption } from './styles';
 
@@ -41,7 +42,7 @@ export function Register() {
   const handlePassword = event => {
     setState(s => ({ ...s, password: event.target.value }));
   };
-  const handleConfrimPassword = event => {
+  const handleConfirmPassword = event => {
     setState(s => ({ ...s, confirmPassword: event.target.value }));
   };
 
@@ -60,19 +61,38 @@ export function Register() {
       });
   };
 
+  ValidatorForm.addValidationRule('isName', value => {
+    return value.length >= 3 && value.length <= 15;
+  });
+
+  ValidatorForm.addValidationRule('isPasswordMatch', value => {
+    return value === state.password;
+  });
+
+  ValidatorForm.addValidationRule('password', value => {
+    return value.length >= 8;
+  });
+
   return (
     <MainView id="login">
       <Title>Create your CoolFeed Account</Title>
-      <FullWidthInput id="registerName" label="First Name" value={state.firstName} onChange={handleFname} />
-      <FullWidthInput id="registerName" label="Last Name" value={state.lastName} onChange={handleLname} />
-      <FullWidthInput id="registerEmail" label="Email" value={state.email} onChange={handleMail} />
-      <FullWidthInput id="registerPassword" label="Password" value={state.password} onChange={handlePassword} />
-      <FullWidthInput id="registerPasswordConfirm" label="Confirm Password" value={state.confirmPassword} onChange={handleConfrimPassword} />
-      <Box textAlign="center" style={{ margin: '1em' }}>
-        <Button onClick={handleSubmit} variant="contained">
-          Submit
-        </Button>
-      </Box>
+      <ValidatorForm onSubmit={handleSubmit}>
+        <FullWidthInput id="registerName" label="First Name" name="firstName" value={state.firstName} onChange={handleFname} validators={['required', 'isName']} errorMessages={['This field is required', 'Must between 3 and 15 characters']} />
+
+        <FullWidthInput id="registerName" label="Last Name" value={state.lastName} onChange={handleLname} validators={['required', 'isName']} errorMessages={['This field is required', 'Must between 3 and 15 characters']} />
+
+        <FullWidthInput id="registerEmail" label="Email" value={state.email} onChange={handleMail} validators={['required', 'isEmail']} errorMessages={['This field is required', 'Invalid email']} />
+
+        <FullWidthInput id="registerPassword" label="Password" value={state.password} onChange={handlePassword} validators={['required', 'password']} errorMessages={['This field is required', 'Must be at least 8 characters']} />
+
+        <FullWidthInput id="registerPasswordConfirm" label="Confirm Password" value={state.confirmPassword} onChange={handleConfirmPassword} validators={['required', 'isPasswordMatch']} errorMessages={['This field is required', 'Passwords must match']} />
+
+        <Box textAlign="center" style={{ margin: '1em' }}>
+          <Button type="submit" variant="contained">
+            Submit
+          </Button>
+        </Box>
+      </ValidatorForm>
       <OtherOption>
         Already have an account? <Link to="/login">Log in</Link>
       </OtherOption>

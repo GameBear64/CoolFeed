@@ -5,7 +5,8 @@ export const UserUpdateContext = createContext();
 export const SearchStateContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
-  let localStorageData = typeof window?.localStorage?.cf_data === 'object' ? window?.localStorage?.cf_data : null;
+  let localStorageData = window?.localStorage?.cf_data?.length > 0 ? window?.localStorage?.cf_data : null;
+
   const [user, setUser] = useState(JSON.parse(localStorageData));
   const searchState = useState('');
 
