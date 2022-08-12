@@ -1,13 +1,15 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Button } from '@mui/material';
+import { Grid } from '@mui/material';
+import Twemoji from 'react-twemoji';
 
-import { MainView } from './styles';
+import { MainView, SideView, ProfilePicture } from './styles';
 import { UserContext } from '../context';
 
 import { PostComponent } from '../components/Post/index';
 import { FriendButton } from './../components/FriendButton/index';
+import { UserCard } from '../components/UserCard/index';
 
 export function Profile() {
   const { id } = useParams();
@@ -15,15 +17,12 @@ export function Profile() {
 
   let { user, jwt } = useContext(UserContext);
 
-  const [posts, setPosts] = useState({
-    posts: [],
-    count: 0,
-  });
+  const defaultPostState = { posts: [], count: 0 };
+  const [posts, setPosts] = useState(defaultPostState);
 
   const [page, setPage] = useState(0);
 
   const fetchMoreData = () => {
-    console.log('at fetch more', profile);
     if (profile === null) return;
     fetch(`${window.location.protocol}//${window.location.hostname}:3030/post/byuser/${profile._id}/${page}`, {
       headers: {
@@ -43,8 +42,6 @@ export function Profile() {
         }
       });
     setPage(p => p + 1);
-    console.log('page', page);
-    console.log('posts', posts);
   };
 
   useEffect(() => {
@@ -75,36 +72,59 @@ export function Profile() {
   };
 
   useEffect(() => {
+    setPosts(defaultPostState);
+    setPage(0);
     getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, jwt, user]);
 
   return (
-    <MainView id="profile">
-      <h1>
-        {profile?.firstName} {profile?.lastName}
-      </h1>
-      {profile?.nickname && <p>aka {profile.nickname}</p>}
-
-      <FriendButton profile={profile} getUser={getUser} />
-
-      {posts.posts && (
-        <InfiniteScroll
-          dataLength={posts?.posts?.length}
-          next={fetchMoreData}
-          hasMore={posts?.posts?.length < posts.count}
-          loader={<h4>Loading...</h4>}
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>You reached the end!</b>
-            </p>
-          }
+    <>
+      <SideView>
+        <h2>Friends of {profile?.nickname || profile?.firstName}</h2>
+        {profile?.friends && profile.friends.map(friend => <UserCard key={friend._id} profile={friend} />)}
+      </SideView>
+      <MainView id="profile">
+        <Grid
+          item
+          xs={10}
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            padding: '1em',
+          }}
         >
-          {posts.posts.map(post => (
-            <PostComponent key={post._id} post={post} setPosts={setPosts} />
-          ))}
-        </InfiniteScroll>
-      )}
-    </MainView>
+          <ProfilePicture src={profile?.profilePicture} alt="ProfilePicture" />
+          <div>
+            <h1>
+              {profile?.firstName} {profile?.lastName}
+            </h1>
+            <h3>{profile?.nickname && <p>aka {profile.nickname}</p>}</h3>
+
+            <FriendButton profile={profile} getUser={getUser} />
+          </div>
+        </Grid>
+
+        <Twemoji>{profile?.biography && <p>{profile.biography}</p>}</Twemoji>
+
+        {posts.posts && (
+          <InfiniteScroll
+            dataLength={posts?.posts?.length}
+            next={fetchMoreData}
+            hasMore={posts?.posts?.length < posts.count}
+            loader={<h4>Loading...</h4>}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>You reached the end!</b>
+              </p>
+            }
+          >
+            {posts.posts.map(post => (
+              <PostComponent key={post._id} post={post} setPosts={setPosts} />
+            ))}
+          </InfiniteScroll>
+        )}
+      </MainView>
+    </>
   );
 }

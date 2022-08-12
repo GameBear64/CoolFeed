@@ -2,6 +2,25 @@ const router = require('express').Router();
 const ObjectId = require('mongodb').ObjectId;
 
 const { UserModel } = require('../models/User');
+const { PostModel } = require('../models/Post');
+const { CommentModel } = require('../models/Comment');
+
+router
+  .route('/')
+  .patch(async (req, res) => {
+    await UserModel.updateOne({ _id: ObjectId(req.userInSession) }, { ...req.body });
+  })
+  .delete(async (req, res) => {
+    await UserModel.deleteOne({ _id: ObjectId(req.userInSession) });
+    await PostModel.deleteMany({ author: req.userInSession });
+    await CommentModel.deleteMany({ author: req.userInSession });
+
+    res.status(200).send({ message: 'User Removed' });
+    // res.status(200).send({ message: 'Use another method' });
+  })
+  .all((req, res) => {
+    res.status(405).send({ message: 'Use another method' });
+  });
 
 router
   .route('/friends')
@@ -71,7 +90,7 @@ router
 router
   .route('/:id')
   .get(async (req, res) => {
-    let userInfo = await UserModel.findOne({ _id: ObjectId(req.params.id) });
+    let userInfo = await UserModel.findOne({ _id: ObjectId(req.params.id) }).populate('friends', '_id firstName lastName nickname profilePicture pendingFriends friends');
     res.status(200).send(userInfo);
   })
   .all((req, res) => {

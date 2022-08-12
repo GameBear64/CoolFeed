@@ -14,6 +14,7 @@ import { Register } from './routes/Register';
 import { Profile } from './routes/Profile';
 import { Friends } from './routes/Friends';
 import { Search } from './routes/Search';
+import { Settings } from './routes/Settings';
 
 export default function App() {
   return (
@@ -30,9 +31,9 @@ export default function App() {
               <Route path="edit" element={<Post />} />
             </Route>
             <Route path="/profile" element={<Profile />}>
-              {/* <Route path="settings" element={<Profile />} /> */}
               <Route path=":id" element={<Profile />} />
             </Route>
+            <Route path="/settings" element={<Settings />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="/search" element={<Search />} />
             <Route path="*" element={<PageNotFound />} />

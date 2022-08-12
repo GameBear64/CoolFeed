@@ -15,9 +15,7 @@ export function PostComponent({ setPosts, post, single, searched }) {
       <Post id="post">
         <PostComponentMeta setPosts={setPosts} post={post} single={single} />
 
-        <PostBody>
-          <p>{body}</p>
-        </PostBody>
+        <PostBody>{body}</PostBody>
 
         <Carousel showThumbs={false} infiniteLoop emulateTouch useKeyboardArrows dynamicHeight showStatus={false} showIndicators={images?.length > 1}>
           {images && images.map(({ _id, name, data }) => <PostImage key={_id} src={data} alt={name} />)}

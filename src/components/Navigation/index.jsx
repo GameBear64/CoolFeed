@@ -6,11 +6,12 @@ import { useDebouncedEffect } from './../../utils/useDebounce';
 
 import { Icon, TextField, Button, Menu, MenuItem, Grid } from '@mui/material';
 
-import { UserUpdateContext, SearchStateContext } from './../../context/index';
+import { UserContext, UserUpdateContext, SearchStateContext } from './../../context/index';
 
 export function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -19,8 +20,7 @@ export function Navbar() {
   const [search, setSearch] = searchState;
 
   let setUser = useContext(UserUpdateContext);
-
-  const navigate = useNavigate();
+  let user = useContext(UserContext);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -41,6 +41,10 @@ export function Navbar() {
       navigate(`/friends`);
     }
 
+    if (event.target.dataset.item === 'settings') {
+      navigate(`/settings`);
+    }
+
     setAnchorEl(null);
   };
 
@@ -59,13 +63,15 @@ export function Navbar() {
 
   useDebouncedEffect(() => setSearch(searchTerm), [searchTerm], 1000);
 
+  if (!user) return;
   return (
-    <Grid id="nav" container direction="row" justifyContent="space-between" alignItems="center" style={{ backgroundColor: 'lightblue' }}>
+    <Grid id="nav" container direction="row" justifyContent="space-between" alignItems="center" style={{ backgroundColor: 'lightblue', position: 'sticky', top: '0', zIndex: '10' }}>
+      {/* <Grid id="nav" container direction="row" justifyContent="space-between" alignItems="center" style={{ backgroundColor: 'lightblue' }}> */}
       <Button onClick={closeSearch}>
         <Icon>home</Icon> Home
       </Button>
 
-      <TextField id="search" label="Search" size="small" style={{ width: '50vw' }} value={searchTerm} onFocus={openSearch} onChange={handleSearch} />
+      <TextField id="search" label="Search" size="small" style={{ width: '50vw', margin: '0.3em' }} value={searchTerm} onFocus={openSearch} onChange={handleSearch} />
 
       <Button aria-controls={open ? 'navMenu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={handleClick}>
         <Icon>menu</Icon>

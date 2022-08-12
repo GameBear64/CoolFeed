@@ -12,6 +12,7 @@ const PostImage = styled.img`
 `;
 
 const PostBody = styled(Twemoji)`
+  white-space: pre-wrap;
   padding: 1em 2em;
 `;
 

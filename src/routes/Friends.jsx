@@ -8,8 +8,6 @@ import { UserCard } from '../components/UserCard/index';
 export function Friends() {
   let { user, jwt } = useContext(UserContext);
 
-  console.log('friends');
-
   const [profile, setProfile] = useState(null);
 
   const getUser = () => {
@@ -31,13 +29,11 @@ export function Friends() {
   return (
     <MainView id="profile">
       <h1>Friends</h1>
-      <h2>Pending friends</h2>
-
+      {!profile?.pendingFriends.length === 0 && <h2>Pending friends</h2>}
       {profile?.pendingFriends && profile.pendingFriends.map(friend => <UserCard key={friend._id} profile={friend} getUser={getUser} />)}
-      {!profile?.pendingFriends.length > 0 && <p>Nobody yet</p>}
 
       <h2>Friends</h2>
-      {profile?.friends && profile.friends.map(friend => <UserCard key={friend._id} profile={friend} />)}
+      {profile?.friends && profile.friends.map(friend => <UserCard key={friend._id} profile={friend} getUser={getUser} />)}
       {!profile?.friends.length > 0 && <p>Nobody yet</p>}
     </MainView>
   );

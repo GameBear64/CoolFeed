@@ -21,8 +21,7 @@ app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 require('./routes/index')(app);
 
 app.get('/', (req, res) => {
-  res.send('Ya got me');
-  console.log('ya');
+  res.send(`Express server using MongoDB for CoolFeed, change port from ${settings.expressPort} to 3000`);
 });
 
 app.listen(settings.expressPort, () => {
