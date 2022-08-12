@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button, Box } from '@mui/material';
+import { ValidatorForm } from 'react-material-ui-form-validator';
 
 import { UserContext, UserUpdateContext } from '../context';
 
@@ -50,13 +51,15 @@ export function Login() {
     <MainView id="login">
       <Title>Login to your CoolFeed account</Title>
 
-      <FullWidthInput id="loginEmail" label="Email" value={state.email} onChange={handleMail} />
-      <FullWidthInput id="loginPassword" label="Password" type="password" value={state.password} onChange={handlePassword} />
-      <Box textAlign="center" style={{ margin: '1em' }}>
-        <Button onClick={handleSubmit} variant="contained">
-          Submit
-        </Button>
-      </Box>
+      <ValidatorForm onSubmit={handleSubmit}>
+        <FullWidthInput id="loginEmail" label="Email" value={state.email} onChange={handleMail} validators={['required']} errorMessages={['This field is required']} />
+        <FullWidthInput id="loginPassword" label="Password" type="password" value={state.password} onChange={handlePassword} validators={['required']} errorMessages={['This field is required']} />
+        <Box textAlign="center" style={{ margin: '1em' }}>
+          <Button type="submit" variant="contained">
+            Submit
+          </Button>
+        </Box>
+      </ValidatorForm>
       <OtherOption>
         Don't have an account? <Link to="/register">Register here</Link>
       </OtherOption>

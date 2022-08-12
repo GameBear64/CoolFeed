@@ -38,6 +38,8 @@ router
   .route('/')
   .post(async (req, res) => {
     try {
+      if (req.body?.body?.length > 2000 || req.body?.status.length > 30) return res.status(406).send({ message: 'Felid too long' });
+
       let imageIds = await uploadImages(req.body.images, req);
       await PostModel.create({ ...req.body, author: req.userInSession, images: imageIds });
       res.status(200).send({ message: 'Entry Created' });
@@ -85,6 +87,8 @@ router
     res.status(200).send(post);
   })
   .patch(async (req, res) => {
+    if (req.body?.body?.length > 2000 || req.body?.status?.length > 30) return res.status(406).send({ message: 'Felid too long' });
+
     let post = await PostModel.findOne({ _id: ObjectId(req.params.id) });
 
     if (req.userInSession !== post.author.toString()) return res.status(401).send({ message: 'Not Authorized' });
@@ -160,6 +164,8 @@ async function uploadImages(images, req) {
   let imgIds = [];
 
   for (let i = 0; i < images.length; i++) {
+    if (images[i].data.length > 1100000) return { message: 'Image too big' };
+
     let foundImage = await ImageModel.findOne({ md5: md5(images[i].data) });
 
     if (foundImage) {

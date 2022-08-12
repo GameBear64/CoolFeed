@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
-import { TextField, Button, Icon, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Button, Icon, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 import { UserContext } from './../../../context/index';
 import fetchPost from './../../../utils/fetchPost';
@@ -69,6 +70,10 @@ export function CommentSettings({ setPosts, id, postId, body, author }) {
     setOpenEdit(false);
   };
 
+  ValidatorForm.addValidationRule('isComment', value => {
+    return value.length <= 1000;
+  });
+
   return (
     <div id="postMetaSettings">
       <Dialog open={openWarning} onClose={handleDeleteOption} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
@@ -85,7 +90,9 @@ export function CommentSettings({ setPosts, id, postId, body, author }) {
       <Dialog open={openEdit} onClose={handleEditOption} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
         <DialogTitle id="alert-dialog-title">Editing comment</DialogTitle>
         <DialogContent>
-          <TextField id="commentEdit" label="Edit comment" size="small" value={commentFelid} onChange={handleComment} style={{ width: '30em', marginTop: '1em', marginBottom: '1em' }} />
+          <ValidatorForm>
+            <TextValidator id="commentEdit" label="Edit comment" size="small" value={commentFelid} onChange={handleComment} style={{ width: '30em', marginTop: '1em', marginBottom: '1em' }} validators={['isComment']} errorMessages={['Comment too big']} />
+          </ValidatorForm>
         </DialogContent>
         <DialogActions style={{ justifyContent: 'space-between' }}>
           <Button data-delete="discard" onClick={handleEditOption}>

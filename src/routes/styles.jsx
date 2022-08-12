@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { TextField } from '@mui/material';
+import { TextValidator } from 'react-material-ui-form-validator';
 
 const MainView = styled.div`
   width: 30vw;
@@ -11,7 +11,7 @@ const SideView = styled.div`
   position: absolute;
   left: 0;
   width: 30vw;
-  padding: 4em;
+  padding: 4em 1em;
 `;
 
 const ProfilePicture = styled.img`
@@ -21,14 +21,14 @@ const ProfilePicture = styled.img`
   border-radius: 50%;
 `;
 
-const FullWidthInput = styled(TextField)`
+const FullWidthInput = styled(TextValidator)`
   width: 95%;
   && {
     margin: 0.5em;
   }
 `;
 
-const HalfWidthInput = styled(TextField)`
+const HalfWidthInput = styled(TextValidator)`
   width: 46%;
   && {
     margin: 0.5em;

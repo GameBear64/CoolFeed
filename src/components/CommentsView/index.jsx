@@ -1,7 +1,8 @@
 import { useState, useContext } from 'react';
-import { Fade, TextField, Button, Grid } from '@mui/material';
+import { Fade, Button, Grid } from '@mui/material';
 import Twemoji from 'react-twemoji';
 import { Link } from 'react-router-dom';
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 import { UserContext } from './../../context/index';
 import { CommentImage, CommentTimestamp, Comment } from './styles';
@@ -38,11 +39,17 @@ export function PostComments({ setPosts, post }) {
     });
   };
 
+  ValidatorForm.addValidationRule('isComment', value => {
+    return value.length <= 1000;
+  });
+
   return (
     <div>
       <Grid container style={{ marginBottom: '2em' }}>
         <Grid item xs={10}>
-          <TextField id="commentForm" label="Write a comment!" size="small" value={commentFelid} onChange={handleComment} style={{ width: '100%' }} />
+          <ValidatorForm>
+            <TextValidator id="commentForm" label="Write a comment!" size="small" value={commentFelid} onChange={handleComment} style={{ width: '100%' }} validators={['isComment']} errorMessages={['Comment too big']} />
+          </ValidatorForm>
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'right' }}>
           <Button onClick={handlePostComment}>Post</Button>

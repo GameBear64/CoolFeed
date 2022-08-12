@@ -7,12 +7,16 @@ const { PostModel } = require('../models/Post');
 router
   .route('/:postOrCommentId')
   .post(async (req, res) => {
+    if (req.body?.body?.length > 1000) return res.status(406).send({ message: 'Felid too long' });
+
     let comment = await CommentModel.create({ body: req.body.body, author: req.userInSession, post: req.params.postOrCommentId });
 
     await PostModel.updateOne({ _id: ObjectId(req.params.postOrCommentId) }, { $push: { comments: comment._id } }, { timestamps: false });
     res.status(200).send({ message: 'Entry created' });
   })
   .patch(async (req, res) => {
+    if (req.body?.body?.length > 1000) return res.status(406).send({ message: 'Felid too long' });
+
     let targetComment = await CommentModel.findOne({ _id: ObjectId(req.params.postOrCommentId) });
 
     if (req.userInSession !== targetComment.author.toString()) return res.status(401).send({ message: 'Not Authorized' });
