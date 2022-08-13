@@ -37,6 +37,7 @@ const HalfWidthInput = styled(TextValidator)`
 
 const Title = styled.h1`
   margin: 4em 0;
+  text-align: center;
 `;
 
 const OtherOption = styled.p`
