@@ -20,7 +20,7 @@ export function PostFormBody({ postBody, setPostBody }) {
   });
 
   return (
-    <ValidatorForm>
+    <ValidatorForm onSubmit={() => {}}>
       <TextValidator id="postStatus" label="How are you feeling today?" size="small" value={postBody.status} onChange={handleStatusChange} style={{ width: '95%' }} validators={['isStatus']} errorMessages={['Status too big']} />
       <TextValidator id="postBody" label="Got something cool to share?" multiline rows={2} value={postBody.body} onChange={handleBodyChange} style={{ width: '95%' }} validators={['isPost']} errorMessages={['Post too big']} />
     </ValidatorForm>
