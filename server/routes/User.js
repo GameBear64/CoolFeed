@@ -11,9 +11,9 @@ router
     if (req.body) await UserModel.updateOne({ _id: ObjectId(req.userInSession) }, { ...req.body });
   })
   .delete(async (req, res) => {
-    await UserModel.deleteOne({ _id: ObjectId(req.userInSession) });
-    await PostModel.deleteMany({ author: req.userInSession });
     await CommentModel.deleteMany({ author: req.userInSession });
+    await PostModel.deleteMany({ author: req.userInSession });
+    await UserModel.deleteOne({ _id: ObjectId(req.userInSession) });
 
     res.status(200).send({ message: 'User Removed' });
     // res.status(200).send({ message: 'Use another method' });

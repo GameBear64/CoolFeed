@@ -83,9 +83,9 @@ export function Register() {
 
         <FullWidthInput id="registerEmail" label="Email" value={state.email} onChange={handleMail} validators={['required', 'isEmail']} errorMessages={['This field is required', 'Invalid email']} />
 
-        <FullWidthInput id="registerPassword" label="Password" value={state.password} onChange={handlePassword} validators={['required', 'password']} errorMessages={['This field is required', 'Must be at least 8 characters']} />
+        <FullWidthInput id="registerPassword" label="Password" value={state.password} onChange={handlePassword} validators={['required', 'password']} type="password" errorMessages={['This field is required', 'Must be at least 8 characters']} />
 
-        <FullWidthInput id="registerPasswordConfirm" label="Confirm Password" value={state.confirmPassword} onChange={handleConfirmPassword} validators={['required', 'isPasswordMatch']} errorMessages={['This field is required', 'Passwords must match']} />
+        <FullWidthInput id="registerPasswordConfirm" label="Confirm Password" value={state.confirmPassword} onChange={handleConfirmPassword} type="password" validators={['required', 'isPasswordMatch']} errorMessages={['This field is required', 'Passwords must match']} />
 
         <Box textAlign="center" style={{ margin: '1em' }}>
           <Button type="submit" variant="contained">

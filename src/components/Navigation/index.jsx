@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useDebouncedEffect } from './../../utils/useDebounce';
 

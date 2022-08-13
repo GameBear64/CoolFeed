@@ -1,19 +1,24 @@
 import { useState, useEffect, useContext } from 'react';
-import { Button, Divider, Box } from '@mui/material';
+import { Button, Divider, Box, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { ValidatorForm } from 'react-material-ui-form-validator';
+import { useNavigate } from 'react-router-dom';
 
-import { UserContext } from '../context';
+import { UserContext, UserUpdateContext } from '../context';
 
 import { MainView, FullWidthInput } from './styles';
 
 export function Settings() {
   let { user, jwt } = useContext(UserContext);
 
+  let setUser = useContext(UserUpdateContext);
+  const navigate = useNavigate();
   const defaultPasswordsState = { oldPassword: '', password: '', confirmPassword: '' };
 
   const filterUserFelids = ({ firstName, lastName, nickname, email, biography }) => ({ firstName, lastName, nickname, email, biography });
   const [profile, setProfile] = useState({ firstName: '', lastName: '', nickname: '', email: '', biography: '' });
   const [passwords, setPasswords] = useState(defaultPasswordsState);
+
+  const [openWarning, setOpenWarning] = useState(false);
 
   const getUser = () => {
     fetch(`${window.location.protocol}//${window.location.hostname}:3030/user/${user._id}`, {
@@ -87,15 +92,26 @@ export function Settings() {
   };
 
   const handleDelete = () => {
-    fetch(`${window.location.protocol}//${window.location.hostname}:3030/user`, {
-      method: 'DELETE',
-      headers: {
-        jwt,
-        'Content-Type': 'application/json',
-      },
-    }).then(res => {
-      if (res.ok) getUser();
-    });
+    setOpenWarning(true);
+  };
+
+  const handleDialogOption = event => {
+    if (event.target.dataset.delete === 'yes') {
+      fetch(`${window.location.protocol}//${window.location.hostname}:3030/user`, {
+        method: 'DELETE',
+        headers: {
+          jwt,
+          'Content-Type': 'application/json',
+        },
+      }).then(res => {
+        if (res.ok) {
+          window.localStorage.cf_data = '';
+          setUser(null);
+          navigate(`/login`);
+        }
+      });
+    }
+    setOpenWarning(false);
   };
 
   ValidatorForm.addValidationRule('isName', value => {
@@ -157,6 +173,20 @@ export function Settings() {
           Delete account
         </Button>
       </Box>
+      <Dialog open={openWarning} onClose={handleDialogOption} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+        <DialogTitle id="alert-dialog-title">Do you really want to delete this?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">You cannot recover your profile if you delete it, are you sure about this? </DialogContentText>
+        </DialogContent>
+        <DialogActions style={{ justifyContent: 'space-between' }}>
+          <Button data-delete="no" onClick={handleDialogOption} autoFocus>
+            No, go back
+          </Button>
+          <Button data-delete="yes" onClick={handleDialogOption}>
+            Yes, delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </MainView>
   );
 }
